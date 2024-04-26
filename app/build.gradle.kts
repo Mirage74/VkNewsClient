@@ -55,6 +55,7 @@ dependencies {
 
     implementation(libs.ui)
     implementation(libs.androidx.material)
+    implementation(libs.androidx.material3)
     implementation(libs.ui.tooling.preview)
 
     implementation(libs.androidx.lifecycle.runtime.ktx)
