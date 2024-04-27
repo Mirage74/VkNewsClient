@@ -1,64 +1,35 @@
 package com.balex.vknewsclient.ui.theme
 
-import android.util.Log
+import android.annotation.SuppressLint
+import androidx.compose.foundation.layout.padding
 import androidx.compose.material.BottomNavigation
 import androidx.compose.material.BottomNavigationItem
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Favorite
-import androidx.compose.material3.FloatingActionButton
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
-import androidx.compose.material3.SnackbarDuration
-import androidx.compose.material3.SnackbarHost
-import androidx.compose.material3.SnackbarHostState
-import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
-import kotlinx.coroutines.launch
+import androidx.compose.ui.unit.dp
+import com.balex.vknewsclient.domain.FeedPost
 
+@SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
 @Composable
 fun MainScreen() {
 
-    val snackbarHostState =  SnackbarHostState()
-    Log.d("MainScreen", "snackbarHostState: ${snackbarHostState.currentSnackbarData.toString()}")
-    val scope = rememberCoroutineScope()
-    val fabIsVisible = remember { mutableStateOf(true) }
+    val feedPost = remember {
+        mutableStateOf(FeedPost())
+    }
+
 
     Scaffold(
-        snackbarHost = {
 
-            SnackbarHost(hostState = snackbarHostState)
-        },
-        floatingActionButton = {
-            if (fabIsVisible.value) {
-                FloatingActionButton(
-                    onClick = {
-
-                        scope.launch {
-                            val action = snackbarHostState.showSnackbar(
-                                message = "This is snackbar",
-                                actionLabel = "Hide FAB",
-                                duration = SnackbarDuration.Long
-                            )
-                            if (action == SnackbarResult.ActionPerformed) {
-                                fabIsVisible.value = false
-                            }
-                        }
-                    }
-                ) {
-                    Icon(Icons.Filled.Favorite, contentDescription = null)
-                }
-            }
-        },
         bottomBar = {
             BottomNavigation {
-                Log.d("MainScreen", "BottomNavigation")
 
                 val selectedItemPosition = remember {
                     mutableIntStateOf(0)
@@ -86,6 +57,23 @@ fun MainScreen() {
             }
         }
     ) {
-
+        PostCard(
+            modifier = Modifier.padding(8.dp),
+            feedPost = feedPost.value,
+            onStatisticItemClickListener = { newItem ->
+                //Log.d("onItemClickListener", "MainScreen")
+                val oldStatistics = feedPost.value.statistics
+                val newStatistics = oldStatistics.toMutableList().apply {
+                    replaceAll { oldItem ->
+                        if (oldItem.type == newItem.type) {
+                            oldItem.copy(count = oldItem.count + 1)
+                        } else {
+                            oldItem
+                        }
+                    }
+                }
+                feedPost.value = feedPost.value.copy(statistics = newStatistics)
+            }
+        )
     }
 }
