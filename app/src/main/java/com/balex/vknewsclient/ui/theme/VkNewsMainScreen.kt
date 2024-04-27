@@ -25,7 +25,8 @@ import kotlinx.coroutines.launch
 @Composable
 fun MainScreen() {
 
-    val snackbarHostState = SnackbarHostState()
+    val snackbarHostState =  SnackbarHostState()
+    Log.d("MainScreen", "snackbarHostState: ${snackbarHostState.currentSnackbarData.toString()}")
     val scope = rememberCoroutineScope()
     val fabIsVisible = remember { mutableStateOf(true) }
 
@@ -57,7 +58,7 @@ fun MainScreen() {
         },
         bottomBar = {
             BottomNavigation {
-                Log.d("COMPOSE_TEST", "BottomNavigation")
+                Log.d("MainScreen", "BottomNavigation")
 
                 val selectedItemPosition = remember {
                     mutableIntStateOf(0)
@@ -70,8 +71,8 @@ fun MainScreen() {
                 )
                 items.forEachIndexed { index, item ->
                     BottomNavigationItem(
-                        selected = selectedItemPosition.value == index,
-                        onClick = { selectedItemPosition.value = index },
+                        selected = selectedItemPosition.intValue == index,
+                        onClick = { selectedItemPosition.intValue = index },
                         icon = {
                             Icon(item.icon, contentDescription = null)
                         },
