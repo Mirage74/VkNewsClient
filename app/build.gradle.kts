@@ -58,6 +58,8 @@ dependencies {
     implementation(libs.androidx.material3)
     implementation(libs.ui.tooling.preview)
 
+    implementation(libs.androidx.runtime.livedata)
+
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
