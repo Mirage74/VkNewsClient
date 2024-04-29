@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -21,6 +22,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.balex.vknewsclient.MainViewModel
 import com.balex.vknewsclient.navigation.AppNavGraph
+import com.balex.vknewsclient.navigation.Screen
 
 
 @Composable
@@ -51,7 +53,16 @@ fun MainScreen(viewModel: MainViewModel) {
                     }
                     BottomNavigationItem(
                         selected = isSelected,
-                        onClick = { navHostController.navigate(item.screen.route) },
+                        onClick = {
+                            navHostController.navigate(item.screen.route) {
+                                popUpTo(Screen.NewsFeed.route) {
+                                    saveState = true
+                                }
+                                launchSingleTop = true
+                                restoreState = true
+                            }
+
+                                  },
                         icon = {
                             Icon(item.icon, contentDescription = null)
                         },
@@ -86,7 +97,7 @@ fun MainScreen(viewModel: MainViewModel) {
 
 @Composable
 private fun TextCounter(name: String) {
-    var count by remember {
+    var count by rememberSaveable  {
         mutableIntStateOf(0)
     }
 
