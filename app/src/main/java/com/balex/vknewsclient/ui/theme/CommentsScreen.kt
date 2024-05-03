@@ -1,5 +1,6 @@
 package com.balex.vknewsclient.ui.theme
 
+import android.util.Log
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -29,16 +30,25 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.balex.vknewsclient.CommentsViewModel
+import com.balex.vknewsclient.CommentsViewModelFactory
+import com.balex.vknewsclient.domain.FeedPost
 import com.balex.vknewsclient.domain.PostComment
 
 @Composable
 fun CommentsScreen(
-    onBackPressed: () -> Unit
+    onBackPressed: () -> Unit,
+    feedPost: FeedPost
 ) {
-    val viewModel: CommentsViewModel = viewModel()
-    val screenState = viewModel.screenState.observeAsState(CommentsScreenState.Initial)
+    val viewModel: CommentsViewModel = viewModel(
+        factory = CommentsViewModelFactory(feedPost)
+    )
 
+//    viewModel.loadComments(FeedPost())
+
+    val screenState = viewModel.screenState.observeAsState(CommentsScreenState.Initial)
     val currentState = screenState.value
+//    Log.d("CommentsScreen", "CommentsScreen")
+
     if (currentState is CommentsScreenState.Comments) {
 
         Scaffold(
