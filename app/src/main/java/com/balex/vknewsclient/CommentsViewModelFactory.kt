@@ -4,6 +4,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
 import com.balex.vknewsclient.domain.FeedPost
 
+@Suppress("UNCHECKED_CAST")
 class CommentsViewModelFactory(
     private val feedPost: FeedPost
 ) : ViewModelProvider.Factory {
