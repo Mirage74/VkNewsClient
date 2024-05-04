@@ -18,9 +18,11 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.stringResource
+import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.balex.vknewsclient.domain.FeedPost
 import com.balex.vknewsclient.navigation.AppNavGraph
+import com.balex.vknewsclient.navigation.Screen
 import com.balex.vknewsclient.navigation.rememberNavigationState
 
 
@@ -39,8 +41,6 @@ fun MainScreen() {
         bottomBar = {
             BottomNavigation {
                 val navBackStackEntry by navigationState.navHostController.currentBackStackEntryAsState()
-                val currentRout = navBackStackEntry?.destination?.route
-
 
                 val items = listOf(
                     NavigationItem.Home,
@@ -48,15 +48,22 @@ fun MainScreen() {
                     NavigationItem.Profile
                 )
                 items.forEach { item ->
-                    val isSelected = currentRout == item.screen.route
-                    val colorLabel = if (isSelected) {
+                    val selected = navBackStackEntry?.destination?.hierarchy?.any {
+                        it.route == item.screen.route
+                    } ?: false
+
+                    val colorLabel = if (selected) {
                         MaterialTheme.colors.onPrimary
                     } else {
                         MaterialTheme.colors.onSecondary
                     }
                     BottomNavigationItem(
-                        selected = isSelected,
-                        onClick = { navigationState.navigateTo(item.screen.route) },
+                        selected = selected,
+                        onClick = {
+                            if (!selected) {
+                                navigationState.navigateTo(item.screen.route)
+                            }
+                        },
                         icon = {
                             Icon(item.icon, contentDescription = null)
                         },
@@ -67,7 +74,7 @@ fun MainScreen() {
 
                             )
                         },
-                        selectedContentColor  = MaterialTheme.colors.onPrimary,
+                        selectedContentColor = MaterialTheme.colors.onPrimary,
 
                         unselectedContentColor = MaterialTheme.colors.onSecondary
                     )
@@ -77,22 +84,23 @@ fun MainScreen() {
     ) { paddingValues ->
         AppNavGraph(
             navHostController = navigationState.navHostController,
-            homeScreenContent = {
-                if (commentsToPost.value == null) {
-                    HomeScreen(
-                        paddingValues = paddingValues,
-                        onCommentClickListener = {
-                            commentsToPost.value = it
-                        }
-                    )
-                } else {
-                    CommentsScreen (
-                        {
-                            commentsToPost.value = null
-                        },
-                        commentsToPost.value!!
-                        )
-                }
+            newsFeedScreenContent = {
+                HomeScreen(
+                    paddingValues = paddingValues,
+                    onCommentClickListener = {
+                        commentsToPost.value = it
+                        //navigationState.navigateTo(Screen.Comments.route)
+                        navigationState.navigateToComments()
+                    }
+                )
+            },
+            commentsScreenContent = {
+                CommentsScreen(
+                    onBackPressed = {
+                        navigationState.navHostController.popBackStack()
+                    },
+                    feedPost = commentsToPost.value!!
+                )
             },
             favouriteScreenContent = { TextCounter(name = "Favourite") },
             profileScreenContent = { TextCounter(name = "Profile") }
@@ -100,9 +108,10 @@ fun MainScreen() {
     }
 }
 
+
 @Composable
 private fun TextCounter(name: String) {
-    var count by rememberSaveable  {
+    var count by rememberSaveable {
         mutableIntStateOf(0)
     }
 
