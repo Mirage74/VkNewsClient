@@ -9,7 +9,6 @@ import com.balex.vknewsclient.ui.theme.NewsFeedScreenState
 
 class NewsFeedViewModel : ViewModel() {
 
-
     private val sourceList = mutableListOf<FeedPost>().apply {
         repeat(10) {
             add(FeedPost(id = it))
@@ -19,8 +18,6 @@ class NewsFeedViewModel : ViewModel() {
 
     private val _screenState = MutableLiveData<NewsFeedScreenState>(initialState)
     val screenState: LiveData<NewsFeedScreenState> = _screenState
-
-
 
     fun updateCount(feedPost: FeedPost, item: StatisticItem) {
         val currentState = screenState.value

@@ -1,6 +1,5 @@
 package com.balex.vknewsclient
 
-import android.util.Log
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
@@ -25,7 +24,6 @@ class CommentsViewModel(
                 add(PostComment(id = it))
             }
         }
-
         _screenState.value = CommentsScreenState.Comments(
             feedPost = feedPost,
             comments = comments
