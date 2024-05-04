@@ -4,10 +4,11 @@ import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
 import androidx.navigation.navigation
+import com.balex.vknewsclient.domain.FeedPost
 
 fun NavGraphBuilder.homeScreenNavGraph(
     newsFeedScreenContent: @Composable () -> Unit,
-    commentsScreenContent: @Composable () -> Unit
+    commentsScreenContent: @Composable (FeedPost) -> Unit
 ) {
     navigation(
         startDestination = Screen.NewsFeed.route,
@@ -16,8 +17,14 @@ fun NavGraphBuilder.homeScreenNavGraph(
         composable(Screen.NewsFeed.route) {
             newsFeedScreenContent()
         }
+
+        composable(Screen.Comments.route) { //comments/{feed_post_id}
+            val feedPostId = it.arguments?.getInt(Screen.KEY_FEED_POST_ID) ?: 0
+            commentsScreenContent(FeedPost(id = feedPostId))
+        }
+
         composable(Screen.Comments.route) {
-            commentsScreenContent()
+            commentsScreenContent(FeedPost())
         }
     }
 }

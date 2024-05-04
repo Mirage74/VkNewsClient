@@ -1,5 +1,7 @@
 package com.balex.vknewsclient.navigation
 
+import com.balex.vknewsclient.domain.FeedPost
+
 sealed class Screen(
     val route: String
 ) {
@@ -7,13 +9,22 @@ sealed class Screen(
     data object NewsFeed : Screen(ROUTE_NEWS_FEED)
     data object Favourite : Screen(ROUTE_FAVOURITE)
     data object Profile : Screen(ROUTE_PROFILE)
-    data object Home: Screen(ROUTE_HOME)
-    data object Comments: Screen(ROUTE_COMMENTS)
+    data object Home : Screen(ROUTE_HOME)
+    data object Comments : Screen(ROUTE_COMMENTS) {
 
-    private companion object {
+        private const val ROUTE_FOR_ARGS = "comments"
+
+        fun getRouteWithArgs(feedPost: FeedPost): String {
+            return "$ROUTE_FOR_ARGS/${feedPost.id}"
+        }
+    }
+
+    companion object {
+
+        const val KEY_FEED_POST_ID = "feed_post_id"
 
         const val ROUTE_HOME = "home"
-        const val ROUTE_COMMENTS = "comments"
+        const val ROUTE_COMMENTS = "comments/{$KEY_FEED_POST_ID}"
         const val ROUTE_NEWS_FEED = "news_feed"
         const val ROUTE_FAVOURITE = "favourite"
         const val ROUTE_PROFILE = "profile"
