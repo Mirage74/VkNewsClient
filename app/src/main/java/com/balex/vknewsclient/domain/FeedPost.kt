@@ -1,7 +1,9 @@
 package com.balex.vknewsclient.domain
 
+import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
+import androidx.annotation.RequiresApi
 import androidx.navigation.NavType
 import com.balex.vknewsclient.R
 import com.google.gson.Gson
@@ -27,8 +29,13 @@ data class FeedPost(
 
         val NavigationType: NavType<FeedPost> = object : NavType<FeedPost>(false) {
 
+            @RequiresApi(Build.VERSION_CODES.TIRAMISU)
             override fun get(bundle: Bundle, key: String): FeedPost? {
-                return bundle.getParcelable(key, FeedPost::class.java)
+                return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                    bundle.getParcelable(key, FeedPost::class.java)
+                } else {
+                    bundle.getParcelable(key)
+                }
             }
 
             override fun parseValue(value: String): FeedPost {
