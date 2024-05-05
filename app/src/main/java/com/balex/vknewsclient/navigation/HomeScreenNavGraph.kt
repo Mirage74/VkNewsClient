@@ -25,12 +25,15 @@ fun NavGraphBuilder.homeScreenNavGraph(
             route = Screen.Comments.route,
             arguments = listOf(
                 navArgument(Screen.KEY_FEED_POST) {
-                    type = NavType.StringType
+                    type = FeedPost.NavigationType
                 }
             )
         ) { //comments/{feed_post_id}
-            val feedPostJson = it.arguments?.getString(Screen.KEY_FEED_POST) ?: ""
-            val feedPost = Gson().fromJson(feedPostJson, FeedPost::class.java)
+            val feedPost = it.arguments?.getParcelable(
+                Screen.KEY_FEED_POST,
+                FeedPost::class.java
+            ) ?: throw RuntimeException("Args is null")
+
 
             commentsScreenContent(feedPost)
         }
