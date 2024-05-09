@@ -1,11 +1,10 @@
-package com.balex.vknewsclient
+package com.balex.vknewsclient.presentation.news
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.balex.vknewsclient.domain.FeedPost
 import com.balex.vknewsclient.domain.StatisticItem
-import com.balex.vknewsclient.ui.theme.NewsFeedScreenState
 
 class NewsFeedViewModel : ViewModel() {
 

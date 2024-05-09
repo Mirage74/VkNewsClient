@@ -1,4 +1,4 @@
-package com.balex.vknewsclient.ui.theme
+package com.balex.vknewsclient.presentation.main
 
 sealed class AuthState {
 

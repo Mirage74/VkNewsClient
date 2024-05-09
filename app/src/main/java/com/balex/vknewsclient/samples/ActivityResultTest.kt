@@ -1,4 +1,4 @@
-package com.balex.vknewsclient.ui.theme
+package com.balex.vknewsclient.samples
 
 import android.net.Uri
 import androidx.activity.compose.rememberLauncherForActivityResult

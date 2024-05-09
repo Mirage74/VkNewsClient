@@ -1,4 +1,4 @@
-package com.balex.vknewsclient.ui.theme
+package com.balex.vknewsclient.presentation.comments
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -28,10 +28,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.balex.vknewsclient.CommentsViewModel
-import com.balex.vknewsclient.CommentsViewModelFactory
 import com.balex.vknewsclient.domain.FeedPost
 import com.balex.vknewsclient.domain.PostComment
+import com.balex.vknewsclient.ui.theme.VkNewsClientTheme
 
 @Composable
 fun CommentsScreen(

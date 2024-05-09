@@ -1,4 +1,4 @@
-package com.balex.vknewsclient.ui.theme
+package com.balex.vknewsclient.presentation.main
 
 import androidx.compose.foundation.clickable
 import androidx.compose.material.BottomNavigation
@@ -19,6 +19,8 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.balex.vknewsclient.navigation.AppNavGraph
 import com.balex.vknewsclient.navigation.rememberNavigationState
+import com.balex.vknewsclient.presentation.comments.CommentsScreen
+import com.balex.vknewsclient.presentation.news.HomeScreen
 
 
 @Composable
