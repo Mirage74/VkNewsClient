@@ -18,7 +18,6 @@ import androidx.lifecycle.viewmodel.compose.viewModel
 import com.balex.vknewsclient.NewsFeedViewModel
 import com.balex.vknewsclient.domain.FeedPost
 
-@OptIn(ExperimentalMaterialApi::class, ExperimentalFoundationApi::class)
 @Composable
 fun HomeScreen(
     paddingValues: PaddingValues,
