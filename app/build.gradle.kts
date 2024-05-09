@@ -65,6 +65,10 @@ dependencies {
     implementation(libs.gson)
     implementation(libs.coil.kt.coil.compose)
 
+    implementation(libs.com.vk.android.sdk.core2)
+    implementation(libs.vk.android.sdk.api)
+
+
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
     implementation(platform(libs.androidx.compose.bom))
@@ -77,4 +81,5 @@ dependencies {
     androidTestImplementation(platform(libs.androidx.compose.bom))
     androidTestImplementation(libs.androidx.ui.test.junit4)
     debugImplementation(libs.androidx.ui.tooling)
-    debugImplementation(libs.androidx.ui.test.manifest)}
+    debugImplementation(libs.androidx.ui.test.manifest)
+}
