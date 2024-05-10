@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.balex.vknewsclient"
+    namespace = "com.balex.fbnewsclient"
     compileSdk = 34
 
     defaultConfig {
-        applicationId = "com.balex.vknewsclient"
+        applicationId = "com.balex.fbnewsclient"
         minSdk = 30
         targetSdk = 34
         versionCode = 1
@@ -64,6 +64,8 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.gson)
     implementation(libs.coil.kt.coil.compose)
+    implementation(libs.facebook.facebook.login)
+    implementation(libs.android.facebook.android.sdk)
 
     implementation(libs.com.vk.android.sdk.core2)
     implementation(libs.vk.android.sdk.api)
