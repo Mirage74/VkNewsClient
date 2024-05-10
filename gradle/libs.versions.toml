@@ -1,6 +1,5 @@
 [versions]
 agp = "8.4.0"
-androidSdkApi = "4.0.1"
 coilComposeVersion = "2.1.0"
 gson = "2.10.1"
 kotlin = "1.9.20"
@@ -21,7 +20,6 @@ vkAndroidSdkCoreVersion = "4.1.0"
 
 
 [libraries]
-android-sdk-api = { module = "'com.vk:android-sdk-api", version.ref = "androidSdkApi" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 androidx-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata", version.ref = "runtimeLivedata" }
