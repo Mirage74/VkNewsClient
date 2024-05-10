@@ -1,9 +1,0 @@
-<resources>
-    <string name="app_name">VkNewsClient</string>
-    <string name="template_text">orem Ipsum is simply dummy text of the printing and typesettin</string>
-    <string name="navigation_item_main">Главная</string>
-    <string name="navigation_item_favourite">Избранное</string>
-    <string name="navigation_item_profile">Профиль</string>
-    <string name="button_login">Войти</string>
-    <integer name="com_vk_sdk_AppId">51921091</integer>
-</resources>
