@@ -19,7 +19,7 @@ interface ApiService {
     ): PostsDto
 
     companion object {
-        const val ACCESS_TOKEN = "EAANutEDbvyUBO2NmnVWlAUKgzEbZARN9WDsPjTn0u3apnC0QXXbC8wsMvoUkLl7mgw017RIjWIZCBripZBfAW6ZCr323xcr5D2jpLL3T49FcxHRVFv9Gx55m8q7UYv59yQOF3aHZCInjttTjVfprKvKuXhyK1hSNvwCT11PbhtLlCfouFIpaAis573EGLgAUoAkv0uCcchYgaJZASJG9lqb3J1NzMMG1wbW8MlFQnoSlZCRDxkLUv7kAgZDZD"
+        const val ACCESS_TOKEN = "EAANutEDbvyUBO5s6bqoIisOlch0zdNasLV7xHZCRMC6PzkpSFzh6VCOQVZCrUKjQ8yzDw00yCarEbjFzHT3MXYtap9ASraoBWgc0r5gt30YTTCK97spe1bXMSxNM1oHOog6ZCALMkKlPeW9K865v0yY8xDfTUZAdQeirvIMZBTIupUvqXz8KNmJsl"
     }
 }
 
