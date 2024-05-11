@@ -1,5 +1,14 @@
 package com.balex.fbnewsclient.domain
 
-//App ID
-//51921091
+
+//id
+//966145391443749
+//secret
+//30cd472062755d66b1bf43c991d1bfa6
+//Hash
+//xPBjdft85wDtROCtPLhmbZlnLho=
+//Client token
+//e147b58499800248fd47a84509cecf01
+//Access Token
+//EAANutEDbvyUBO5THUxp24dFs8URCzX3gd7gEJG6yyuvGMYU8X7L60TlZBPbiIsCr8xzypGovvN4MqPa48WOyMBu3ZBICz6pL2LTSQINs0Bv0lXV6eK0ibmHZCRx7CfuCFCVt1UXMAMnZB2reFflirzNbk6RoLZAZA9xeRHyHskPNqGmnFia2IkK8XibvjyUzBfZBTIu5qrIKIyrXO1A689ZBMx0ha3xevPMNQa9nDCJXshHZC7SBnhaV4bFOYo0cxzwZDZD
 

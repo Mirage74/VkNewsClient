@@ -1,4 +1,4 @@
-package com.balex.fbnewsclient.ui.theme
+package com.balex.fbnewsclient.presentation.comments
 
 import com.balex.fbnewsclient.domain.FeedPost
 import com.balex.fbnewsclient.domain.PostComment

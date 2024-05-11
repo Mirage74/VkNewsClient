@@ -1,11 +1,10 @@
-package com.balex.fbnewsclient
+package com.balex.fbnewsclient.presentation.news
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.balex.fbnewsclient.domain.FeedPost
 import com.balex.fbnewsclient.domain.StatisticItem
-import com.balex.fbnewsclient.ui.theme.NewsFeedScreenState
 
 class NewsFeedViewModel : ViewModel() {
 

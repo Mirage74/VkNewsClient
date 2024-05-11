@@ -1,4 +1,4 @@
-package com.balex.fbnewsclient.ui.theme
+package com.balex.fbnewsclient.presentation.comments
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -28,10 +28,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.balex.fbnewsclient.CommentsViewModel
-import com.balex.fbnewsclient.CommentsViewModelFactory
 import com.balex.fbnewsclient.domain.FeedPost
 import com.balex.fbnewsclient.domain.PostComment
+import com.balex.fbnewsclient.ui.theme.FbNewsClientTheme
 
 @Composable
 fun CommentsScreen(

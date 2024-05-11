@@ -1,4 +1,4 @@
-package com.balex.fbnewsclient
+package com.balex.fbnewsclient.presentation.comments
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider

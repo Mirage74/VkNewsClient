@@ -1,6 +1,5 @@
 [versions]
 agp = "8.4.0"
-androidSdkApi = "4.0.1"
 coilComposeVersion = "2.1.0"
 facebookFacebookLogin = "latest.release"
 gson = "2.10.1"
@@ -18,12 +17,11 @@ navigationCompose = "2.7.7"
 ui = "1.6.7"
 uiToolingPreview = "1.6.7"
 runtimeLivedata = "1.6.7"
-vkAndroidSdkCoreVersion = "4.1.0"
+
 
 
 [libraries]
 android-facebook-android-sdk = { module = "com.facebook.android:facebook-android-sdk", version.ref = "facebookFacebookLogin" }
-android-sdk-api = { module = "'com.vk:android-sdk-api", version.ref = "androidSdkApi" }
 androidx-lifecycle-viewmodel-compose = { module = "androidx.lifecycle:lifecycle-viewmodel-compose", version.ref = "lifecycleRuntimeKtx" }
 androidx-navigation-compose = { module = "androidx.navigation:navigation-compose", version.ref = "navigationCompose" }
 androidx-runtime-livedata = { module = "androidx.compose.runtime:runtime-livedata", version.ref = "runtimeLivedata" }
@@ -31,7 +29,6 @@ androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = 
 androidx-material = { module = "androidx.compose.material:material", version.ref = "material" }
 androidx-material3 = { module = "androidx.compose.material3:material3", version.ref = "material3" }
 coil-kt-coil-compose = { module = "io.coil-kt:coil-compose", version.ref = "coilComposeVersion" }
-com-vk-android-sdk-core2 = { module = "com.vk:android-sdk-core", version.ref = "vkAndroidSdkCoreVersion" }
 facebook-facebook-login = { module = "com.facebook.android:facebook-login", version.ref = "facebookFacebookLogin" }
 gson = { module = "com.google.code.gson:gson", version.ref = "gson" }
 junit = { group = "junit", name = "junit", version.ref = "junit" }
@@ -48,7 +45,7 @@ androidx-ui-test-manifest = { group = "androidx.compose.ui", name = "ui-test-man
 androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit4" }
 ui = { module = "androidx.compose.ui:ui", version.ref = "ui" }
 ui-tooling-preview = { module = "androidx.compose.ui:ui-tooling-preview", version.ref = "uiToolingPreview" }
-vk-android-sdk-api = { module = "com.vk:android-sdk-api", version.ref = "vkAndroidSdkCoreVersion" }
+
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }

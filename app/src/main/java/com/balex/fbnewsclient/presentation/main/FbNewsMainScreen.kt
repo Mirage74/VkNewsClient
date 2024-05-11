@@ -1,4 +1,4 @@
-package com.balex.fbnewsclient.ui.theme
+package com.balex.fbnewsclient.presentation.main
 
 import androidx.compose.foundation.clickable
 import androidx.compose.material.BottomNavigation
@@ -19,6 +19,8 @@ import androidx.navigation.NavDestination.Companion.hierarchy
 import androidx.navigation.compose.currentBackStackEntryAsState
 import com.balex.fbnewsclient.navigation.AppNavGraph
 import com.balex.fbnewsclient.navigation.rememberNavigationState
+import com.balex.fbnewsclient.presentation.comments.CommentsScreen
+import com.balex.fbnewsclient.presentation.news.NewsFeedScreen
 
 
 @Composable
@@ -76,7 +78,7 @@ fun MainScreen() {
         AppNavGraph(
             navHostController = navigationState.navHostController,
             newsFeedScreenContent = {
-                HomeScreen(
+                NewsFeedScreen(
                     paddingValues = paddingValues,
                     onCommentClickListener = {
                         //navigationState.navigateTo(Screen.Comments.route)

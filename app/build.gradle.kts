@@ -64,12 +64,12 @@ dependencies {
     implementation(libs.androidx.lifecycle.viewmodel.compose)
     implementation(libs.gson)
     implementation(libs.coil.kt.coil.compose)
+    implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+    implementation("com.squareup.okhttp3:logging-interceptor:4.9.3")
+
     implementation(libs.facebook.facebook.login)
     implementation(libs.android.facebook.android.sdk)
-
-    implementation(libs.com.vk.android.sdk.core2)
-    implementation(libs.vk.android.sdk.api)
-
+    implementation("com.facebook.android:facebook-android-sdk:[8,9)")
 
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)

@@ -1,4 +1,4 @@
-package com.balex.fbnewsclient.ui.theme
+package com.balex.fbnewsclient.samples
 
 import android.os.Handler
 import androidx.compose.foundation.layout.Column
