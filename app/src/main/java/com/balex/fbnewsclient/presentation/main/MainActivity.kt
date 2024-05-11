@@ -2,6 +2,7 @@ package com.balex.fbnewsclient.presentation.main
 
 
 import android.os.Bundle
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.livedata.observeAsState
@@ -32,7 +33,8 @@ class MainActivity : ComponentActivity() {
                     }
                     is AuthState.NotAuthorized -> {
                         LoginScreen {
-                            viewModel.processSuccessLoginResult(it)
+                            viewModel.processSuccessLoginResult()
+                            //Log.d("Result", it.toString())
                         }
                     }
                     else -> {

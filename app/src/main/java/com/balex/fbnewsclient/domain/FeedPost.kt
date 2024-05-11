@@ -8,6 +8,7 @@ import androidx.navigation.NavType
 import com.balex.fbnewsclient.R
 import com.google.gson.Gson
 import kotlinx.parcelize.Parcelize
+import kotlin.random.Random
 
 @Parcelize
 data class FeedPost(
@@ -19,10 +20,11 @@ data class FeedPost(
     val contentImageResId: Int = R.drawable.cat,
     val statistics: List<StatisticItem> = listOf(
         StatisticItem(StatisticType.VIEWS, 55),
-        StatisticItem(StatisticType.COMMENTS, 12),
+        StatisticItem(StatisticType.COMMENTS, 1222),
         StatisticItem(StatisticType.SHARES, 27),
-        StatisticItem(StatisticType.LIKES, 395)
-    )
+        StatisticItem(StatisticType.LIKES, 395644)
+    ),
+    val isFavourite: Boolean = Random.nextBoolean()
 ) : Parcelable {
 
     companion object {

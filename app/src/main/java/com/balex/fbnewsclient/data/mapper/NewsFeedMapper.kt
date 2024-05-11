@@ -3,6 +3,8 @@ package com.balex.fbnewsclient.data.mapper
 import android.util.Log
 import com.balex.fbnewsclient.data.model.PostsDto
 import com.balex.fbnewsclient.domain.FeedPost
+import java.text.SimpleDateFormat
+import java.util.*
 
 class NewsFeedMapper {
 
@@ -20,11 +22,18 @@ class NewsFeedMapper {
 
             val feedPost = FeedPost(
                 id = post.id,
-                publicationDate = post.createdTime,
+                publicationDate = correctDate(post.createdTime),
                 contentText = post.message,
             )
             result.add(feedPost)
         }
         return result
     }
+
+private fun correctDate(date: String): String {
+    var str = date.replace("T", ", ")
+    str = str.substring(0, str.indexOf(",") + 7)
+    return str
+}
+
 }

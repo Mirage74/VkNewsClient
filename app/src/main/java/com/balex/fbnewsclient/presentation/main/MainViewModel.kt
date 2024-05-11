@@ -15,7 +15,7 @@ class MainViewModel() : ViewModel() {
 
 
 
-    fun processSuccessLoginResult(result: LoginResult) {
+    fun processSuccessLoginResult() {
         _authState.value = AuthState.Authorized
     }
 
