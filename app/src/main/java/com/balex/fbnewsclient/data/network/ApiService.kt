@@ -5,6 +5,7 @@ import com.balex.fbnewsclient.domain.UserFacebookProfile
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
+import retrofit2.http.Url
 
 interface ApiService {
     @GET("me")
@@ -16,6 +17,11 @@ interface ApiService {
     suspend fun getUserPosts(
         @Path("id") id: String,
         @Query("access_token") token: String = ACCESS_TOKEN
+    ): PostsDto
+
+    @GET
+    suspend fun getNextPageUserPosts(
+        @Url nextPage: String
     ): PostsDto
 
     companion object {
