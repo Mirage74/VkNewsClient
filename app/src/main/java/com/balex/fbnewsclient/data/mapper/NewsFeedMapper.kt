@@ -8,8 +8,11 @@ class NewsFeedMapper {
     fun mapResponseToPosts(responseDto: PostsDto): List<FeedPost> {
         val result = mutableListOf<FeedPost>()
 
-        val posts = responseDto.data
+        val posts = responseDto.data.stream().filter {
+            e -> ((e.message != null) && (e.message.isNotEmpty()))
+        }
         for (post in posts) {
+
             val feedPost = FeedPost(
                 id = post.id,
                 publicationDate = post.createdTime,

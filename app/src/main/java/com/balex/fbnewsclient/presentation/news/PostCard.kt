@@ -2,7 +2,16 @@ package com.balex.fbnewsclient.presentation.news
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material.Card
 import androidx.compose.material.Icon
@@ -17,7 +26,6 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import coil.compose.AsyncImage
 import com.balex.fbnewsclient.R
 import com.balex.fbnewsclient.domain.FeedPost
 import com.balex.fbnewsclient.domain.StatisticItem
@@ -46,14 +54,6 @@ fun PostCard(
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight(),
-                painter = painterResource(id = feedPost.contentImageResId),
-                contentDescription = null,
-                contentScale = ContentScale.FillWidth
-            )
-            Image(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(200.dp),
                 painter = painterResource(id = feedPost.contentImageResId),
                 contentDescription = null,
                 contentScale = ContentScale.FillWidth

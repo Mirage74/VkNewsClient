@@ -2,21 +2,11 @@ package com.balex.fbnewsclient.presentation.main
 
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.runtime.livedata.observeAsState
-import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.viewmodel.compose.viewModel
-import com.balex.fbnewsclient.data.network.ApiFactory
 import com.balex.fbnewsclient.ui.theme.FbNewsClientTheme
-import com.facebook.AccessToken
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.GlobalScope
-import kotlinx.coroutines.async
-import kotlinx.coroutines.launch
-import org.json.JSONObject
 
 
 class MainActivity : ComponentActivity() {
@@ -28,25 +18,12 @@ class MainActivity : ComponentActivity() {
             FbNewsClientTheme {
 
                 val viewModel: MainViewModel = viewModel(
-                    factory = MainViewModelFactory(this)
+                    factory = MainViewModelFactory()
                 )
                 val authState = viewModel.authState.observeAsState(AuthState.Initial)
 
-                viewModel.userFacebookProfile.observe(this) {
-                    Log.d(TAG, it.toString())
-                    if (it.id.isNotBlank()) {
-                        lifecycleScope.launch {
-                            viewModel.getUserPosts()
-                        }
-                    }
 
-
-                }
-
-                viewModel.userFacebookPosts.observe(this) {
-                    Log.d(TAG, it.toString())
-                }
-
+                viewModel.checkToken(this)
 
                 when (authState.value) {
                     is AuthState.Authorized -> {

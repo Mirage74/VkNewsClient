@@ -5,11 +5,9 @@ import androidx.lifecycle.ViewModelProvider
 
 
 @Suppress("UNCHECKED_CAST")
-class MainViewModelFactory(
-    private val activity: MainActivity
-) : ViewModelProvider.Factory {
+class MainViewModelFactory() : ViewModelProvider.Factory {
 
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
-        return MainViewModel(activity) as T
+        return MainViewModel() as T
     }
 }

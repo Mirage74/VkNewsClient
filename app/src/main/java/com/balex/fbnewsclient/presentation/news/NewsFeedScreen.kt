@@ -17,24 +17,29 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.balex.fbnewsclient.domain.FeedPost
 
+//val TAG = "NewsFeedScreen"
+
 @Composable
 fun NewsFeedScreen(
     paddingValues: PaddingValues,
     onCommentClickListener: (FeedPost) -> Unit
 ) {
     val viewModel: NewsFeedViewModel = viewModel()
-    val screenState = viewModel.screenState.observeAsState(NewsFeedScreenState.Initial)
+    val screenState = viewModel.screenState.observeAsState(NewsFeedScreenState.Initial())
 
-    when (val currentState = screenState.value) {
+
+
+
+    when (val currentScreenState = screenState.value) {
         is NewsFeedScreenState.Posts -> {
             FeedPosts(
                 viewModel = viewModel,
                 paddingValues = paddingValues,
-                posts = currentState.posts,
+                posts = currentScreenState.posts,
                 onCommentClickListener = onCommentClickListener
             )
         }
-        NewsFeedScreenState.Initial -> {
+        is NewsFeedScreenState.Initial -> {
 
         }
     }
