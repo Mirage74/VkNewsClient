@@ -84,10 +84,9 @@ class NewsFeedRepository() {
             }
             val response = deferredUserPosts.await()
             nextPageUrl = response.paging.next
-            return mapper.mapResponseToPosts(response)
-        } else {
-            return Collections.emptyList()
+            _feedPosts.addAll(mapper.mapResponseToPosts(response))
         }
+        return feedPosts
     }
 
     fun changeLikeStatus(feedPost: FeedPost) {
@@ -113,7 +112,7 @@ class NewsFeedRepository() {
 
 
     companion object {
-        const val NUMBER_PAGE_TO_LOAD = 3
+        const val NUMBER_PAGE_TO_LOAD = 1
         const val MIN_LENGTH_STRING_NEXT_QUERY = 30
     }
 }
