@@ -19,12 +19,12 @@ data class FeedPost(
     val contentText: String,
     val contentImageResId: Int = R.drawable.cat,
     val statistics: List<StatisticItem> = listOf(
-        StatisticItem(StatisticType.VIEWS, 55),
-        StatisticItem(StatisticType.COMMENTS, 1222),
-        StatisticItem(StatisticType.SHARES, 27),
-        StatisticItem(StatisticType.LIKES, 395644)
+        StatisticItem(StatisticType.VIEWS),
+        StatisticItem(StatisticType.COMMENTS),
+        StatisticItem(StatisticType.SHARES),
+        StatisticItem(StatisticType.LIKES)
     ),
-    val isFavourite: Boolean = Random.nextBoolean()
+    val isLiked: Boolean = Random.nextBoolean()
 ) : Parcelable {
 
     companion object {

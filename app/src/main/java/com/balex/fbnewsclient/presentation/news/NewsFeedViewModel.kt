@@ -38,6 +38,12 @@ class NewsFeedViewModel : ViewModel() {
         }
     }
 
+    fun changeLikeStatus(feedPost: FeedPost) {
+        repository.changeLikeStatus(feedPost)
+        _screenState.value = NewsFeedScreenState.Posts(posts = repository.feedPosts)
+
+    }
+
 
     fun updateCount(feedPost: FeedPost, item: StatisticItem) {
         val currentState = screenState.value
