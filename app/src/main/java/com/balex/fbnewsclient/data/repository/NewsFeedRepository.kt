@@ -6,26 +6,36 @@ import com.balex.fbnewsclient.data.network.ApiFactory
 import com.balex.fbnewsclient.domain.FeedPost
 import com.balex.fbnewsclient.domain.StatisticItem
 import com.balex.fbnewsclient.domain.StatisticType
+import com.balex.fbnewsclient.extensions.mergeWith
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharingStarted
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.stateIn
 import java.util.Collections
 
 class NewsFeedRepository() {
 
     private var nextPageUrl = ""
-
     private val apiService = ApiFactory.apiService
-
     private val mapper = NewsFeedMapper()
 
+    private val coroutineScope = CoroutineScope(Dispatchers.Default)
+
+    private val nextDataPageLoaded = MutableSharedFlow<Unit>(replay = 1)
+    private val refreshedListFlow = MutableSharedFlow<List<FeedPost>>()
+
     private val _feedPosts = mutableListOf<FeedPost>()
-    val feedPosts: List<FeedPost>
+    private val feedPosts: List<FeedPost>
         get() = _feedPosts.toList()
 
 
-    suspend fun loadProfileAndFeed(): List<FeedPost> {
+    private val loadedListFlow: Flow<List<FeedPost>> = flow {
         val deferredUserFacebookProfile = CoroutineScope(Dispatchers.IO).async {
             ApiFactory.apiService.getUserProfile()
         }
@@ -36,11 +46,27 @@ class NewsFeedRepository() {
                 userPosts.addAll(getUserPosts(userFacebookProfile.id, i))
             }
             _feedPosts.addAll(userPosts)
-            return userPosts
+            emit(userPosts)
+            nextDataPageLoaded.collect {
+                emit(feedPosts)
+            }
         } else {
             throw RuntimeException("User profile is empty, can't get user.id")
         }
-    }
+
+    }.stateIn(
+        coroutineScope,
+        started = SharingStarted.Lazily,
+        initialValue = feedPosts
+    )
+
+    val repositoryPosts: StateFlow<List<FeedPost>> = loadedListFlow
+        .mergeWith(refreshedListFlow)
+        .stateIn(
+            scope = coroutineScope,
+            started = SharingStarted.Lazily,
+            initialValue = feedPosts
+        )
 
 
     private suspend fun getUserPosts(id: String, numPage: Int): List<FeedPost> {
@@ -61,7 +87,6 @@ class NewsFeedRepository() {
 
             val response = deferredUserPosts.await()
             nextPageUrl = response.paging.next
-
             return mapper.mapResponseToPosts(response)
         }
     }
@@ -75,21 +100,24 @@ class NewsFeedRepository() {
         return tempStr
     }
 
-    suspend fun getNextPage(): List<FeedPost> {
-        if (nextPageUrl.length > MIN_LENGTH_STRING_NEXT_QUERY) {
-            val deferredUserPosts = CoroutineScope(Dispatchers.IO).async {
-                apiService.getNextPageUserPosts(
-                    cutNextUrl(nextPageUrl)
-                )
+
+
+    suspend fun getNextPage() {
+
+            if (nextPageUrl.length > MIN_LENGTH_STRING_NEXT_QUERY) {
+                val deferredUserPosts = CoroutineScope(Dispatchers.IO).async {
+                    apiService.getNextPageUserPosts(
+                        cutNextUrl(nextPageUrl)
+                    )
+                }
+                val response = deferredUserPosts.await()
+                nextPageUrl = response.paging.next
+                _feedPosts.addAll(mapper.mapResponseToPosts(response))
+                nextDataPageLoaded.emit(Unit)
             }
-            val response = deferredUserPosts.await()
-            nextPageUrl = response.paging.next
-            _feedPosts.addAll(mapper.mapResponseToPosts(response))
-        }
-        return feedPosts
     }
 
-    fun changeLikeStatus(feedPost: FeedPost) {
+    suspend fun changeLikeStatus(feedPost: FeedPost) {
         val likeItem = feedPost.statistics.first {
             it.type == StatisticType.LIKES
         }
@@ -108,11 +136,17 @@ class NewsFeedRepository() {
         val newPost = feedPost.copy(statistics = newStatistics, isLiked = !feedPost.isLiked)
         val postIndex = _feedPosts.indexOf(feedPost)
         _feedPosts[postIndex] = newPost
+        refreshedListFlow.emit(feedPosts)
+    }
+
+    suspend fun deletePost(feedPost: FeedPost) {
+        _feedPosts.remove(feedPost)
+        refreshedListFlow.emit(feedPosts)
     }
 
 
     companion object {
-        const val NUMBER_PAGE_TO_LOAD = 1
+        const val NUMBER_PAGE_TO_LOAD = 2
         const val MIN_LENGTH_STRING_NEXT_QUERY = 30
     }
 }

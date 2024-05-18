@@ -1,73 +1,58 @@
 package com.balex.fbnewsclient.presentation.news
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.balex.fbnewsclient.data.mapper.NewsFeedMapper
-import com.balex.fbnewsclient.data.model.PostsDto
-import com.balex.fbnewsclient.data.network.ApiFactory
 import com.balex.fbnewsclient.data.repository.NewsFeedRepository
 import com.balex.fbnewsclient.domain.FeedPost
-import com.balex.fbnewsclient.domain.StatisticItem
-import kotlinx.coroutines.Deferred
-import kotlinx.coroutines.async
-import kotlinx.coroutines.delay
+import com.balex.fbnewsclient.extensions.mergeWith
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.filter
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
-import java.net.URLEncoder
-import java.util.Collections
 
 class NewsFeedViewModel : ViewModel() {
 
 
-    private val _screenState = MutableLiveData<NewsFeedScreenState>(NewsFeedScreenState.Initial())
-    val screenState: LiveData<NewsFeedScreenState> = _screenState
-
-    private val mapper = NewsFeedMapper()
-
     private val repository = NewsFeedRepository()
 
-    init {
-        _screenState.value = NewsFeedScreenState.Loading
-        loadFeed()
+    private val feedsFlow = repository.repositoryPosts
 
-    }
+    private val loadNextDataFlow = MutableSharedFlow<NewsFeedScreenState>()
 
-    private fun loadFeed() {
-        viewModelScope.launch {
-            val feedPosts = repository.loadProfileAndFeed()
-            _screenState.value = NewsFeedScreenState.Posts(posts = feedPosts)
-        }
-    }
+
+    val screenState = feedsFlow
+        .filter { it.isNotEmpty() }
+        .map { NewsFeedScreenState.Posts(posts = it) as NewsFeedScreenState }
+        .onStart { emit(NewsFeedScreenState.Loading) }
+        .mergeWith(loadNextDataFlow)
 
     fun loadNextPageFeed() {
-        _screenState.value = NewsFeedScreenState.Posts(
-            posts = repository.feedPosts,
-            nextDataIsLoading = true
-        )
         viewModelScope.launch {
-            _screenState.value = NewsFeedScreenState.Posts(
-                posts = repository.getNextPage())
+            loadNextDataFlow.emit(
+                NewsFeedScreenState.Posts(
+                    posts = feedsFlow.value,
+                    nextDataIsLoading = true
+                )
+            )
+            repository.getNextPage()
+        }
+    }
+
+    fun changeLikeStatus(feedPost: FeedPost) {
+        viewModelScope.launch {
+            repository.changeLikeStatus(feedPost)
         }
     }
 
 
 
-fun changeLikeStatus(feedPost: FeedPost) {
-    repository.changeLikeStatus(feedPost)
-    _screenState.value = NewsFeedScreenState.Posts(posts = repository.feedPosts)
+    fun remove(feedPost: FeedPost) {
+        viewModelScope.launch {
+            repository.deletePost(feedPost)
+        }
+    }
 
-}
-
-
-fun remove(feedPost: FeedPost) {
-    val currentState = screenState.value
-    if (currentState !is NewsFeedScreenState.Posts) return
-
-    val oldPosts = currentState.posts.toMutableList()
-    oldPosts.remove(feedPost)
-    _screenState.value = NewsFeedScreenState.Posts(posts = oldPosts)
-}
 
 
 }
