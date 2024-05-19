@@ -1,31 +1,21 @@
 package com.balex.fbnewsclient.presentation.comments
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.balex.fbnewsclient.data.repository.NewsFeedRepository
 import com.balex.fbnewsclient.domain.FeedPost
-import com.balex.fbnewsclient.domain.PostComment
+import kotlinx.coroutines.flow.map
 
 class CommentsViewModel(
     feedPost: FeedPost
 ) : ViewModel() {
 
-    private val _screenState = MutableLiveData<CommentsScreenState>(CommentsScreenState.Initial)
-    val screenState: LiveData<CommentsScreenState> = _screenState
+    private val repository = NewsFeedRepository()
 
-    init {
-        loadComments(feedPost)
-    }
-
-    private fun loadComments(feedPost: FeedPost) {
-        val comments = mutableListOf<PostComment>().apply {
-            repeat(10) {
-                add(PostComment(id = it))
-            }
+    val screenState = repository.getComments()
+        .map {
+            CommentsScreenState.Comments(
+                feedPost = feedPost,
+                comments = it
+            )
         }
-        _screenState.value = CommentsScreenState.Comments(
-            feedPost = feedPost,
-            comments = comments
-        )
     }
-}

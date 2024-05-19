@@ -1,10 +1,12 @@
 package com.balex.fbnewsclient.presentation.news
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.balex.fbnewsclient.data.repository.NewsFeedRepository
 import com.balex.fbnewsclient.domain.FeedPost
 import com.balex.fbnewsclient.extensions.mergeWith
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.filter
 import kotlinx.coroutines.flow.map
@@ -13,6 +15,9 @@ import kotlinx.coroutines.launch
 
 class NewsFeedViewModel : ViewModel() {
 
+    private val exceptionHandler = CoroutineExceptionHandler { _, _ ->
+        Log.d("NewsFeedViewModel", "Exception caught by exception handler")
+    }
 
     private val repository = NewsFeedRepository()
 
@@ -40,7 +45,7 @@ class NewsFeedViewModel : ViewModel() {
     }
 
     fun changeLikeStatus(feedPost: FeedPost) {
-        viewModelScope.launch {
+        viewModelScope.launch(exceptionHandler) {
             repository.changeLikeStatus(feedPost)
         }
     }
@@ -48,7 +53,7 @@ class NewsFeedViewModel : ViewModel() {
 
 
     fun remove(feedPost: FeedPost) {
-        viewModelScope.launch {
+        viewModelScope.launch(exceptionHandler) {
             repository.deletePost(feedPost)
         }
     }

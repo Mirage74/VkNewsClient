@@ -4,6 +4,7 @@ import com.balex.fbnewsclient.data.mapper.NewsFeedMapper
 import com.balex.fbnewsclient.data.model.PostsDto
 import com.balex.fbnewsclient.data.network.ApiFactory
 import com.balex.fbnewsclient.domain.FeedPost
+import com.balex.fbnewsclient.domain.PostComment
 import com.balex.fbnewsclient.domain.StatisticItem
 import com.balex.fbnewsclient.domain.StatisticType
 import com.balex.fbnewsclient.extensions.mergeWith
@@ -11,11 +12,13 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
+import kotlinx.coroutines.flow.retry
 import kotlinx.coroutines.flow.stateIn
 import java.util.Collections
 
@@ -53,12 +56,11 @@ class NewsFeedRepository() {
         } else {
             throw RuntimeException("User profile is empty, can't get user.id")
         }
-
-    }.stateIn(
-        coroutineScope,
-        started = SharingStarted.Lazily,
-        initialValue = feedPosts
-    )
+    }.retry {
+    //}.retry(2) {
+        delay(RETRY_TIMEOUT_MILLIS)
+        true
+    }
 
     val repositoryPosts: StateFlow<List<FeedPost>> = loadedListFlow
         .mergeWith(refreshedListFlow)
@@ -118,6 +120,7 @@ class NewsFeedRepository() {
     }
 
     suspend fun changeLikeStatus(feedPost: FeedPost) {
+        //throw RuntimeException()
         val likeItem = feedPost.statistics.first {
             it.type == StatisticType.LIKES
         }
@@ -144,9 +147,23 @@ class NewsFeedRepository() {
         refreshedListFlow.emit(feedPosts)
     }
 
+    fun getComments(): Flow<List<PostComment>> = flow {
+        val comments = mutableListOf<PostComment>().apply {
+            repeat(10) {
+                add(PostComment(id = it))
+            }
+        }
+        emit(comments)
+
+    }.retry {
+        delay(RETRY_TIMEOUT_MILLIS)
+        true
+    }
+
 
     companion object {
-        const val NUMBER_PAGE_TO_LOAD = 2
-        const val MIN_LENGTH_STRING_NEXT_QUERY = 30
+        private const val NUMBER_PAGE_TO_LOAD = 2
+        private const val MIN_LENGTH_STRING_NEXT_QUERY = 30
+        private const val RETRY_TIMEOUT_MILLIS = 3000L
     }
 }
