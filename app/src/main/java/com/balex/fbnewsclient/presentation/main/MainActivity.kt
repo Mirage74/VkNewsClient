@@ -2,11 +2,12 @@ package com.balex.fbnewsclient.presentation.main
 
 
 import android.os.Bundle
-import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.livedata.observeAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
+import com.balex.fbnewsclient.domain.AuthState
 import com.balex.fbnewsclient.ui.theme.FbNewsClientTheme
 
 
@@ -21,7 +22,7 @@ class MainActivity : ComponentActivity() {
                 val viewModel: MainViewModel = viewModel(
                     factory = MainViewModelFactory()
                 )
-                val authState = viewModel.authState.observeAsState(AuthState.Initial)
+                val authState = viewModel.authState.collectAsState(AuthState.Initial)
 
 
                 viewModel.checkToken(this)

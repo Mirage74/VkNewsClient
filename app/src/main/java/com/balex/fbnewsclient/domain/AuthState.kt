@@ -1,4 +1,4 @@
-package com.balex.fbnewsclient.presentation.main
+package com.balex.fbnewsclient.domain
 
 sealed class AuthState {
 

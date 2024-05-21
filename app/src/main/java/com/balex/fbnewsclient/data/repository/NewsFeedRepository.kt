@@ -1,13 +1,17 @@
 package com.balex.fbnewsclient.data.repository
 
+import android.app.Activity
 import com.balex.fbnewsclient.data.mapper.NewsFeedMapper
 import com.balex.fbnewsclient.data.model.PostsDto
 import com.balex.fbnewsclient.data.network.ApiFactory
+import com.balex.fbnewsclient.domain.AuthState
 import com.balex.fbnewsclient.domain.FeedPost
 import com.balex.fbnewsclient.domain.PostComment
 import com.balex.fbnewsclient.domain.StatisticItem
 import com.balex.fbnewsclient.domain.StatisticType
 import com.balex.fbnewsclient.extensions.mergeWith
+import com.facebook.AccessToken
+import com.facebook.login.LoginManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -17,12 +21,13 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.retry
 import kotlinx.coroutines.flow.stateIn
 import java.util.Collections
 
-class NewsFeedRepository() {
+class NewsFeedRepository {
 
     private var nextPageUrl = ""
     private val apiService = ApiFactory.apiService
@@ -36,6 +41,33 @@ class NewsFeedRepository() {
     private val _feedPosts = mutableListOf<FeedPost>()
     private val feedPosts: List<FeedPost>
         get() = _feedPosts.toList()
+
+    val checkAuthStateEventsToken = MutableSharedFlow<Activity>(replay = 1)
+
+
+    val authStateFlow = flow {
+
+
+        //checkAuthStateEvents.emit(Unit)
+        checkAuthStateEventsToken.collect {
+            val accessToken = AccessToken.getCurrentAccessToken()
+            var isTokenExpired = true
+            accessToken?.let {accessToken ->
+                isTokenExpired = accessToken.isExpired }
+            if (!isTokenExpired) {
+                LoginManager.getInstance().logInWithReadPermissions(it, listOf("public_profile", "user_friends"))
+                emit(AuthState.Authorized)
+            } else {
+                emit(AuthState.NotAuthorized)
+            }
+
+        }
+
+    }.stateIn(
+        scope = coroutineScope,
+        started = SharingStarted.Lazily,
+        initialValue = AuthState.Initial
+    )
 
 
     private val loadedListFlow: Flow<List<FeedPost>> = flow {
@@ -118,6 +150,7 @@ class NewsFeedRepository() {
                 nextDataPageLoaded.emit(Unit)
             }
     }
+
 
     suspend fun changeLikeStatus(feedPost: FeedPost) {
         //throw RuntimeException()

@@ -1,35 +1,39 @@
 package com.balex.fbnewsclient.presentation.main
 
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.facebook.AccessToken
-import com.facebook.login.LoginManager
-import com.facebook.login.LoginResult
+import androidx.lifecycle.viewModelScope
+import com.balex.fbnewsclient.data.repository.NewsFeedRepository
+import com.balex.fbnewsclient.domain.AuthState
+import com.balex.fbnewsclient.domain.FeedPost
+import com.balex.fbnewsclient.extensions.mergeWith
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.launch
 
 
 class MainViewModel() : ViewModel() {
 
-    private val _authState = MutableLiveData<AuthState>(AuthState.Initial)
-    val authState: LiveData<AuthState> = _authState
 
+    private val repository = NewsFeedRepository()
+    private val isUserAuthorized = MutableSharedFlow<AuthState>()
+
+
+    val authState = repository.authStateFlow
+        .mergeWith(isUserAuthorized)
 
 
     fun processSuccessLoginResult() {
-        _authState.value = AuthState.Authorized
+        viewModelScope.launch {
+            isUserAuthorized.emit(AuthState.Authorized)
+        }
+
     }
 
 
-     fun checkToken(activity: MainActivity) {
-        val accessToken = AccessToken.getCurrentAccessToken()
-        var isTokenExpired = true
-        accessToken?.let { isTokenExpired = it.isExpired }
-        if (!isTokenExpired) {
-            LoginManager.getInstance().logInWithReadPermissions(activity, listOf("public_profile", "user_friends"))
-            _authState.value = AuthState.Authorized
-        } else {
-            _authState.value = AuthState.NotAuthorized
+    fun checkToken(activity: MainActivity) {
+        viewModelScope.launch {
+            repository.checkAuthStateEventsToken.emit(activity)
         }
+
     }
 
 }
