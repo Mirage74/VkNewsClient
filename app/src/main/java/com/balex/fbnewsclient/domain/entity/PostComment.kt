@@ -1,4 +1,4 @@
-package com.balex.fbnewsclient.domain
+package com.balex.fbnewsclient.domain.entity
 
 import com.balex.fbnewsclient.R
 

@@ -2,9 +2,7 @@ package com.balex.fbnewsclient.data.mapper
 
 import android.util.Log
 import com.balex.fbnewsclient.data.model.PostsDto
-import com.balex.fbnewsclient.domain.FeedPost
-import java.text.SimpleDateFormat
-import java.util.*
+import com.balex.fbnewsclient.domain.entity.FeedPost
 
 class NewsFeedMapper {
 

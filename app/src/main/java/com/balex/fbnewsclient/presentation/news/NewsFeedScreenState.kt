@@ -1,6 +1,6 @@
 package com.balex.fbnewsclient.presentation.news
 
-import com.balex.fbnewsclient.domain.FeedPost
+import com.balex.fbnewsclient.domain.entity.FeedPost
 import java.util.Collections
 
 sealed class NewsFeedScreenState {

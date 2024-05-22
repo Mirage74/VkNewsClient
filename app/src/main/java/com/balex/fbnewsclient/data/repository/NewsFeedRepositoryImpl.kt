@@ -4,11 +4,12 @@ import android.app.Activity
 import com.balex.fbnewsclient.data.mapper.NewsFeedMapper
 import com.balex.fbnewsclient.data.model.PostsDto
 import com.balex.fbnewsclient.data.network.ApiFactory
-import com.balex.fbnewsclient.domain.AuthState
-import com.balex.fbnewsclient.domain.FeedPost
-import com.balex.fbnewsclient.domain.PostComment
-import com.balex.fbnewsclient.domain.StatisticItem
-import com.balex.fbnewsclient.domain.StatisticType
+import com.balex.fbnewsclient.domain.entity.AuthState
+import com.balex.fbnewsclient.domain.entity.FeedPost
+import com.balex.fbnewsclient.domain.entity.PostComment
+import com.balex.fbnewsclient.domain.entity.StatisticItem
+import com.balex.fbnewsclient.domain.entity.StatisticType
+import com.balex.fbnewsclient.domain.repository.NewsFeedRepository
 import com.balex.fbnewsclient.extensions.mergeWith
 import com.facebook.AccessToken
 import com.facebook.login.LoginManager
@@ -21,13 +22,12 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.retry
 import kotlinx.coroutines.flow.stateIn
 import java.util.Collections
 
-class NewsFeedRepository {
+class NewsFeedRepositoryImpl : NewsFeedRepository {
 
     private var nextPageUrl = ""
     private val apiService = ApiFactory.apiService
@@ -45,7 +45,7 @@ class NewsFeedRepository {
     val checkAuthStateEventsToken = MutableSharedFlow<Activity>(replay = 1)
 
 
-    val authStateFlow = flow {
+    private val authStateFlow = flow {
 
 
         //checkAuthStateEvents.emit(Unit)
@@ -94,13 +94,19 @@ class NewsFeedRepository {
         true
     }
 
-    val repositoryPosts: StateFlow<List<FeedPost>> = loadedListFlow
+    private val repositoryPosts: StateFlow<List<FeedPost>> = loadedListFlow
         .mergeWith(refreshedListFlow)
         .stateIn(
             scope = coroutineScope,
             started = SharingStarted.Lazily,
             initialValue = feedPosts
         )
+
+
+    override fun getAuthStateFlow(): StateFlow<AuthState> = authStateFlow
+
+    override fun getRepositoryPosts(): StateFlow<List<FeedPost>> = repositoryPosts
+
 
 
     private suspend fun getUserPosts(id: String, numPage: Int): List<FeedPost> {
@@ -136,7 +142,7 @@ class NewsFeedRepository {
 
 
 
-    suspend fun getNextPage() {
+    override suspend fun getNextPage() {
 
             if (nextPageUrl.length > MIN_LENGTH_STRING_NEXT_QUERY) {
                 val deferredUserPosts = CoroutineScope(Dispatchers.IO).async {
@@ -152,7 +158,7 @@ class NewsFeedRepository {
     }
 
 
-    suspend fun changeLikeStatus(feedPost: FeedPost) {
+    override suspend fun changeLikeStatus(feedPost: FeedPost) {
         //throw RuntimeException()
         val likeItem = feedPost.statistics.first {
             it.type == StatisticType.LIKES
@@ -175,12 +181,12 @@ class NewsFeedRepository {
         refreshedListFlow.emit(feedPosts)
     }
 
-    suspend fun deletePost(feedPost: FeedPost) {
+    override suspend fun deletePost(feedPost: FeedPost) {
         _feedPosts.remove(feedPost)
         refreshedListFlow.emit(feedPosts)
     }
 
-    fun getComments(): Flow<List<PostComment>> = flow {
+    override fun getComments(): StateFlow<List<PostComment>> = flow {
         val comments = mutableListOf<PostComment>().apply {
             repeat(10) {
                 add(PostComment(id = it))
@@ -191,7 +197,11 @@ class NewsFeedRepository {
     }.retry {
         delay(RETRY_TIMEOUT_MILLIS)
         true
-    }
+    }.stateIn(
+        scope = coroutineScope,
+        started = SharingStarted.Lazily,
+        initialValue = listOf()
+    )
 
 
     companion object {
@@ -200,3 +210,4 @@ class NewsFeedRepository {
         private const val RETRY_TIMEOUT_MILLIS = 3000L
     }
 }
+

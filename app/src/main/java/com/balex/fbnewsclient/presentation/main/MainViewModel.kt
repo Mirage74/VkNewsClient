@@ -2,9 +2,9 @@ package com.balex.fbnewsclient.presentation.main
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.balex.fbnewsclient.data.repository.NewsFeedRepository
-import com.balex.fbnewsclient.domain.AuthState
-import com.balex.fbnewsclient.domain.FeedPost
+import com.balex.fbnewsclient.data.repository.NewsFeedRepositoryImpl
+import com.balex.fbnewsclient.domain.entity.AuthState
+import com.balex.fbnewsclient.domain.usecases.GetAuthStateFlowUseCase
 import com.balex.fbnewsclient.extensions.mergeWith
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
@@ -13,11 +13,13 @@ import kotlinx.coroutines.launch
 class MainViewModel() : ViewModel() {
 
 
-    private val repository = NewsFeedRepository()
+    private val repository = NewsFeedRepositoryImpl()
     private val isUserAuthorized = MutableSharedFlow<AuthState>()
 
+    private val getAuthStateFlowUseCase = GetAuthStateFlowUseCase(repository)()
 
-    val authState = repository.authStateFlow
+    
+    val authState = getAuthStateFlowUseCase
         .mergeWith(isUserAuthorized)
 
 

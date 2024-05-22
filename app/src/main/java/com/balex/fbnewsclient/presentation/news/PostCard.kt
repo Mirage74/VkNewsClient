@@ -28,9 +28,9 @@ import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.balex.fbnewsclient.R
-import com.balex.fbnewsclient.domain.FeedPost
-import com.balex.fbnewsclient.domain.StatisticItem
-import com.balex.fbnewsclient.domain.StatisticType
+import com.balex.fbnewsclient.domain.entity.FeedPost
+import com.balex.fbnewsclient.domain.entity.StatisticItem
+import com.balex.fbnewsclient.domain.entity.StatisticType
 import com.balex.fbnewsclient.ui.theme.DarkRed
 
 @Composable

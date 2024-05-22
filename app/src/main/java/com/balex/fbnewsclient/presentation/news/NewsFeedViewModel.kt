@@ -3,8 +3,12 @@ package com.balex.fbnewsclient.presentation.news
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.balex.fbnewsclient.data.repository.NewsFeedRepository
-import com.balex.fbnewsclient.domain.FeedPost
+import com.balex.fbnewsclient.data.repository.NewsFeedRepositoryImpl
+import com.balex.fbnewsclient.domain.entity.FeedPost
+import com.balex.fbnewsclient.domain.usecases.ChangeLikeStatusUseCase
+import com.balex.fbnewsclient.domain.usecases.DeletePostUseCase
+import com.balex.fbnewsclient.domain.usecases.GetRepositoryPostsUseCase
+import com.balex.fbnewsclient.domain.usecases.LoadNextDataUseCase
 import com.balex.fbnewsclient.extensions.mergeWith
 import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.flow.MutableSharedFlow
@@ -19,9 +23,15 @@ class NewsFeedViewModel : ViewModel() {
         Log.d("NewsFeedViewModel", "Exception caught by exception handler")
     }
 
-    private val repository = NewsFeedRepository()
+    private val repository = NewsFeedRepositoryImpl()
 
-    private val feedsFlow = repository.repositoryPosts
+    private val getPostsUseCase = GetRepositoryPostsUseCase(repository)
+    private val loadNextDataUseCase = LoadNextDataUseCase(repository)
+    private val changeLikeStatusUseCase = ChangeLikeStatusUseCase(repository)
+    private val deletePostUseCase = DeletePostUseCase(repository)
+
+
+    private val feedsFlow = getPostsUseCase()
 
     private val loadNextDataFlow = MutableSharedFlow<NewsFeedScreenState>()
 
@@ -40,13 +50,13 @@ class NewsFeedViewModel : ViewModel() {
                     nextDataIsLoading = true
                 )
             )
-            repository.getNextPage()
+            loadNextDataUseCase
         }
     }
 
     fun changeLikeStatus(feedPost: FeedPost) {
         viewModelScope.launch(exceptionHandler) {
-            repository.changeLikeStatus(feedPost)
+            changeLikeStatusUseCase(feedPost)
         }
     }
 
@@ -54,7 +64,7 @@ class NewsFeedViewModel : ViewModel() {
 
     fun remove(feedPost: FeedPost) {
         viewModelScope.launch(exceptionHandler) {
-            repository.deletePost(feedPost)
+            deletePostUseCase
         }
     }
 

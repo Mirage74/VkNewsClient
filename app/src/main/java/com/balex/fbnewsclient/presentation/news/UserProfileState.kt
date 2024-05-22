@@ -1,6 +1,6 @@
 package com.balex.fbnewsclient.presentation.news
 
-import com.balex.fbnewsclient.domain.UserFacebookProfile
+import com.balex.fbnewsclient.domain.entity.UserFacebookProfile
 
 
 sealed class UserProfileState {

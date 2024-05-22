@@ -1,7 +1,7 @@
 package com.balex.fbnewsclient.data.network
 
 import com.balex.fbnewsclient.data.model.PostsDto
-import com.balex.fbnewsclient.domain.UserFacebookProfile
+import com.balex.fbnewsclient.domain.entity.UserFacebookProfile
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query

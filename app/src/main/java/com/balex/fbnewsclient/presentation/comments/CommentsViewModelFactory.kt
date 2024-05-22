@@ -2,7 +2,7 @@ package com.balex.fbnewsclient.presentation.comments
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.ViewModelProvider
-import com.balex.fbnewsclient.domain.FeedPost
+import com.balex.fbnewsclient.domain.entity.FeedPost
 
 @Suppress("UNCHECKED_CAST")
 class CommentsViewModelFactory(

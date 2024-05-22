@@ -1,7 +1,7 @@
 package com.balex.fbnewsclient.navigation
 
 import android.net.Uri
-import com.balex.fbnewsclient.domain.FeedPost
+import com.balex.fbnewsclient.domain.entity.FeedPost
 import com.google.gson.Gson
 
 sealed class Screen(

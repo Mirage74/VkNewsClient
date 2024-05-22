@@ -1,7 +1,7 @@
 package com.balex.fbnewsclient.presentation.comments
 
-import com.balex.fbnewsclient.domain.FeedPost
-import com.balex.fbnewsclient.domain.PostComment
+import com.balex.fbnewsclient.domain.entity.FeedPost
+import com.balex.fbnewsclient.domain.entity.PostComment
 
 sealed class CommentsScreenState {
 
