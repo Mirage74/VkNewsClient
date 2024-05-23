@@ -5,8 +5,9 @@ import com.balex.fbnewsclient.data.repository.NewsFeedRepositoryImpl
 import com.balex.fbnewsclient.domain.entity.FeedPost
 import com.balex.fbnewsclient.domain.usecases.GetCommentsUseCase
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
-class CommentsViewModel(
+class CommentsViewModel @Inject constructor (
     feedPost: FeedPost
 ) : ViewModel() {
 

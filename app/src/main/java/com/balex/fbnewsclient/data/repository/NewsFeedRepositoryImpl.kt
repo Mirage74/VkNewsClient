@@ -26,8 +26,9 @@ import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.retry
 import kotlinx.coroutines.flow.stateIn
 import java.util.Collections
+import javax.inject.Inject
 
-class NewsFeedRepositoryImpl : NewsFeedRepository {
+class NewsFeedRepositoryImpl @Inject constructor() : NewsFeedRepository  {
 
     private var nextPageUrl = ""
     private val apiService = ApiFactory.apiService

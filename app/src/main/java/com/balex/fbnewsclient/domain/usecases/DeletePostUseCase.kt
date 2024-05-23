@@ -2,8 +2,9 @@ package com.balex.fbnewsclient.domain.usecases
 
 import com.balex.fbnewsclient.domain.entity.FeedPost
 import com.balex.fbnewsclient.domain.repository.NewsFeedRepository
+import javax.inject.Inject
 
-class DeletePostUseCase(
+class DeletePostUseCase @Inject constructor(
     private val repository: NewsFeedRepository
 ) {
 

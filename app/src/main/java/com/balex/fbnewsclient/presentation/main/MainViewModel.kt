@@ -8,9 +8,10 @@ import com.balex.fbnewsclient.domain.usecases.GetAuthStateFlowUseCase
 import com.balex.fbnewsclient.extensions.mergeWith
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
+import javax.inject.Inject
 
 
-class MainViewModel() : ViewModel() {
+class MainViewModel @Inject constructor() : ViewModel() {
 
 
     private val repository = NewsFeedRepositoryImpl()
