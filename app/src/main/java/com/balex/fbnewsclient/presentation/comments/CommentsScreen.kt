@@ -30,17 +30,18 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.balex.fbnewsclient.domain.entity.FeedPost
 import com.balex.fbnewsclient.domain.entity.PostComment
+import com.balex.fbnewsclient.presentation.ViewModelFactory
 import com.balex.fbnewsclient.ui.theme.FbNewsClientTheme
 
 @Composable
 fun CommentsScreen(
+    viewModelFactory: ViewModelFactory,
     onBackPressed: () -> Unit,
     feedPost: FeedPost,
 ) {
-    val viewModel: CommentsViewModel = viewModel(
-        factory = CommentsViewModelFactory(feedPost)
-    )
 
+
+    val viewModel: CommentsViewModel = viewModel(factory = viewModelFactory)
     val screenState = viewModel.screenState.collectAsState(CommentsScreenState.Initial)
     val currentState = screenState.value
 

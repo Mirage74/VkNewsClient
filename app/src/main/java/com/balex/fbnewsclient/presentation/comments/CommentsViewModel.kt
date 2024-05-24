@@ -8,12 +8,13 @@ import kotlinx.coroutines.flow.map
 import javax.inject.Inject
 
 class CommentsViewModel @Inject constructor (
-    feedPost: FeedPost
+    //feedPost: FeedPost,
+    private val feedPost: FeedPost,
+    getCommentsUseCase: GetCommentsUseCase
 ) : ViewModel() {
 
-    private val repository = NewsFeedRepositoryImpl()
 
-    private val getCommentsUseCase = GetCommentsUseCase(repository)
+
 
     val screenState = getCommentsUseCase()
         .map {

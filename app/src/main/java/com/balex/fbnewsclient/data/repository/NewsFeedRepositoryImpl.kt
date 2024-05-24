@@ -1,9 +1,11 @@
 package com.balex.fbnewsclient.data.repository
 
 import android.app.Activity
+import android.util.Log
 import com.balex.fbnewsclient.data.mapper.NewsFeedMapper
 import com.balex.fbnewsclient.data.model.PostsDto
 import com.balex.fbnewsclient.data.network.ApiFactory
+import com.balex.fbnewsclient.data.network.ApiService
 import com.balex.fbnewsclient.domain.entity.AuthState
 import com.balex.fbnewsclient.domain.entity.FeedPost
 import com.balex.fbnewsclient.domain.entity.PostComment
@@ -28,11 +30,13 @@ import kotlinx.coroutines.flow.stateIn
 import java.util.Collections
 import javax.inject.Inject
 
-class NewsFeedRepositoryImpl @Inject constructor() : NewsFeedRepository  {
+class NewsFeedRepositoryImpl @Inject constructor(
+    private val apiService: ApiService,
+    private val mapper: NewsFeedMapper
+) : NewsFeedRepository {
 
     private var nextPageUrl = ""
-    private val apiService = ApiFactory.apiService
-    private val mapper = NewsFeedMapper()
+
 
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
 
@@ -48,15 +52,16 @@ class NewsFeedRepositoryImpl @Inject constructor() : NewsFeedRepository  {
 
     private val authStateFlow = flow {
 
-
-        //checkAuthStateEvents.emit(Unit)
         checkAuthStateEventsToken.collect {
+            Log.d("authStateFlow", "checkAuthStateEventsToken.collect")
             val accessToken = AccessToken.getCurrentAccessToken()
             var isTokenExpired = true
-            accessToken?.let {accessToken ->
-                isTokenExpired = accessToken.isExpired }
+            accessToken?.let { accessToken ->
+                isTokenExpired = accessToken.isExpired
+            }
             if (!isTokenExpired) {
-                LoginManager.getInstance().logInWithReadPermissions(it, listOf("public_profile", "user_friends"))
+                LoginManager.getInstance()
+                    .logInWithReadPermissions(it, listOf("public_profile", "user_friends"))
                 emit(AuthState.Authorized)
             } else {
                 emit(AuthState.NotAuthorized)
@@ -90,7 +95,7 @@ class NewsFeedRepositoryImpl @Inject constructor() : NewsFeedRepository  {
             throw RuntimeException("User profile is empty, can't get user.id")
         }
     }.retry {
-    //}.retry(2) {
+        //}.retry(2) {
         delay(RETRY_TIMEOUT_MILLIS)
         true
     }
@@ -104,10 +109,12 @@ class NewsFeedRepositoryImpl @Inject constructor() : NewsFeedRepository  {
         )
 
 
-    override fun getAuthStateFlow(): StateFlow<AuthState> = authStateFlow
+    override fun getAuthStateFlow(): StateFlow<AuthState> {
+        Log.d("authStateFlow", "getAuthStateFlow")
+      return  authStateFlow
+    }
 
     override fun getRepositoryPosts(): StateFlow<List<FeedPost>> = repositoryPosts
-
 
 
     private suspend fun getUserPosts(id: String, numPage: Int): List<FeedPost> {
@@ -142,20 +149,19 @@ class NewsFeedRepositoryImpl @Inject constructor() : NewsFeedRepository  {
     }
 
 
-
     override suspend fun getNextPage() {
 
-            if (nextPageUrl.length > MIN_LENGTH_STRING_NEXT_QUERY) {
-                val deferredUserPosts = CoroutineScope(Dispatchers.IO).async {
-                    apiService.getNextPageUserPosts(
-                        cutNextUrl(nextPageUrl)
-                    )
-                }
-                val response = deferredUserPosts.await()
-                nextPageUrl = response.paging.next
-                _feedPosts.addAll(mapper.mapResponseToPosts(response))
-                nextDataPageLoaded.emit(Unit)
+        if (nextPageUrl.length > MIN_LENGTH_STRING_NEXT_QUERY) {
+            val deferredUserPosts = CoroutineScope(Dispatchers.IO).async {
+                apiService.getNextPageUserPosts(
+                    cutNextUrl(nextPageUrl)
+                )
             }
+            val response = deferredUserPosts.await()
+            nextPageUrl = response.paging.next
+            _feedPosts.addAll(mapper.mapResponseToPosts(response))
+            nextDataPageLoaded.emit(Unit)
+        }
     }
 
 

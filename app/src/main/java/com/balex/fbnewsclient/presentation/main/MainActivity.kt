@@ -7,20 +7,29 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.balex.fbnewsclient.domain.entity.AuthState
+import com.balex.fbnewsclient.presentation.NewsFeedApplication
+import com.balex.fbnewsclient.presentation.ViewModelFactory
 import com.balex.fbnewsclient.ui.theme.FbNewsClientTheme
+import javax.inject.Inject
 
 
 class MainActivity : ComponentActivity() {
 
-    val TAG = "MA_TAG"
+    @Inject
+    lateinit var viewModelFactory: ViewModelFactory
+
+    private val component by lazy {
+        (application as NewsFeedApplication).component
+    }
+
+
     override fun onCreate(savedInstanceState: Bundle?) {
+        component.inject(this)
         super.onCreate(savedInstanceState)
         setContent {
             FbNewsClientTheme {
 
-                val viewModel: MainViewModel = viewModel(
-                    factory = MainViewModelFactory()
-                )
+                val viewModel: MainViewModel = viewModel(factory = viewModelFactory)
                 val authState = viewModel.authState.collectAsState(AuthState.Initial)
 
 
@@ -29,7 +38,7 @@ class MainActivity : ComponentActivity() {
                 when (authState.value) {
                     is AuthState.Authorized -> {
                         //Log.d("MainActivity", AccessToken.getCurrentAccessToken()?.permissions.toString())
-                        MainScreen()
+                        MainScreen(viewModelFactory)
                     }
                     is AuthState.NotAuthorized -> {
                         LoginScreen {

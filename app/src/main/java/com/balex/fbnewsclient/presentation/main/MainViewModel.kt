@@ -10,33 +10,26 @@ import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+class MainViewModel @Inject constructor(
+    private val getAuthStateFlowUseCase: GetAuthStateFlowUseCase,
+    private val repository: NewsFeedRepositoryImpl
+) : ViewModel() {
 
-class MainViewModel @Inject constructor() : ViewModel() {
-
-
-    private val repository = NewsFeedRepositoryImpl()
     private val isUserAuthorized = MutableSharedFlow<AuthState>()
 
-    private val getAuthStateFlowUseCase = GetAuthStateFlowUseCase(repository)()
-
-    
-    val authState = getAuthStateFlowUseCase
+    val authState = getAuthStateFlowUseCase()
         .mergeWith(isUserAuthorized)
-
 
     fun processSuccessLoginResult() {
         viewModelScope.launch {
             isUserAuthorized.emit(AuthState.Authorized)
         }
-
     }
-
 
     fun checkToken(activity: MainActivity) {
         viewModelScope.launch {
             repository.checkAuthStateEventsToken.emit(activity)
         }
-
     }
 
 }

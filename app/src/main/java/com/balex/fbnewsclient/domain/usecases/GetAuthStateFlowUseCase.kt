@@ -12,4 +12,8 @@ class GetAuthStateFlowUseCase @Inject constructor(
     operator fun invoke(): StateFlow<AuthState> {
         return repository.getAuthStateFlow()
     }
+
+//    fun getAuthStateFlow(): StateFlow<AuthState> {
+//        return repository.getAuthStateFlow()
+//    }
 }

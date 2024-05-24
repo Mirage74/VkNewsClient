@@ -3,7 +3,6 @@ package com.balex.fbnewsclient.presentation.news
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.balex.fbnewsclient.data.repository.NewsFeedRepositoryImpl
 import com.balex.fbnewsclient.domain.entity.FeedPost
 import com.balex.fbnewsclient.domain.usecases.ChangeLikeStatusUseCase
 import com.balex.fbnewsclient.domain.usecases.DeletePostUseCase
@@ -18,18 +17,16 @@ import kotlinx.coroutines.flow.onStart
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
-class NewsFeedViewModel @Inject constructor() : ViewModel() {
+class NewsFeedViewModel @Inject constructor(
+    getPostsUseCase: GetRepositoryPostsUseCase,
+    private val loadNextDataUseCase: LoadNextDataUseCase,
+    private val changeLikeStatusUseCase: ChangeLikeStatusUseCase,
+    private val deletePostUseCase: DeletePostUseCase
+) : ViewModel() {
 
     private val exceptionHandler = CoroutineExceptionHandler { _, _ ->
         Log.d("NewsFeedViewModel", "Exception caught by exception handler")
     }
-
-    private val repository = NewsFeedRepositoryImpl()
-
-    private val getPostsUseCase = GetRepositoryPostsUseCase(repository)
-    private val loadNextDataUseCase = LoadNextDataUseCase(repository)
-    private val changeLikeStatusUseCase = ChangeLikeStatusUseCase(repository)
-    private val deletePostUseCase = DeletePostUseCase(repository)
 
 
     private val feedsFlow = getPostsUseCase()
@@ -62,13 +59,11 @@ class NewsFeedViewModel @Inject constructor() : ViewModel() {
     }
 
 
-
     fun remove(feedPost: FeedPost) {
         viewModelScope.launch(exceptionHandler) {
             deletePostUseCase
         }
     }
-
 
 
 }
