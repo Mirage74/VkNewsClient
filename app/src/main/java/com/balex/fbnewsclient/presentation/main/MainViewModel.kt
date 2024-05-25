@@ -1,7 +1,6 @@
 package com.balex.fbnewsclient.presentation.main
 
 import android.app.Activity
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.balex.fbnewsclient.domain.entity.AuthState
