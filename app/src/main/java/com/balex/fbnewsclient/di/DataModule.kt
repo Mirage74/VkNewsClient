@@ -11,6 +11,8 @@ import dagger.Provides
 
 @Module
 interface DataModule {
+
+    @ApplicationScope
     @Binds
     fun bindRepository(impl: NewsFeedRepositoryImpl): NewsFeedRepository
 

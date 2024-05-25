@@ -61,7 +61,7 @@ class NewsFeedViewModel @Inject constructor(
 
     fun remove(feedPost: FeedPost) {
         viewModelScope.launch(exceptionHandler) {
-            deletePostUseCase
+            deletePostUseCase(feedPost)
         }
     }
 
