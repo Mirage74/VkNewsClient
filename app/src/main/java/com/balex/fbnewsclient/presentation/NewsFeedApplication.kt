@@ -9,7 +9,8 @@ import com.balex.fbnewsclient.domain.entity.FeedPost
 class NewsFeedApplication : Application() {
 
     val component: ApplicationComponent by lazy {
-        DaggerApplicationComponent.factory().create(
+        DaggerApplicationComponent.factory()
+            .create(
             this,
             FeedPost(id = "", publicationDate = "", contentText = "")
         )

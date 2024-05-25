@@ -20,6 +20,8 @@ class MainActivity : ComponentActivity() {
 
     private val component by lazy {
         (application as NewsFeedApplication).component
+            //.activityComponentFactory()
+            //.create(this)
     }
 
 

@@ -15,6 +15,7 @@ import dagger.Component
 )
 interface ApplicationComponent {
 
+    //fun activityComponentFactory(): ActivityComponent.Factory
     fun inject(mainActivity: MainActivity)
 
     @Component.Factory
@@ -22,7 +23,9 @@ interface ApplicationComponent {
 
         fun create(
             @BindsInstance context: Context,
-            @BindsInstance feedPost: FeedPost
+            @BindsInstance feedPost: FeedPost,
         ): ApplicationComponent
     }
 }
+
+

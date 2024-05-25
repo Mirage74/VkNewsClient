@@ -48,7 +48,7 @@ class NewsFeedViewModel @Inject constructor(
                     nextDataIsLoading = true
                 )
             )
-            loadNextDataUseCase
+            loadNextDataUseCase()
         }
     }
 

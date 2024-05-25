@@ -27,6 +27,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.retry
 import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.launch
 import java.util.Collections
 import javax.inject.Inject
 
@@ -35,7 +36,12 @@ class NewsFeedRepositoryImpl @Inject constructor(
     private val mapper: NewsFeedMapper
 ) : NewsFeedRepository {
 
+    init {
+        Log.d("NewsFeedRepositoryImpl", "NewsFeedRepositoryImpl init")
+    }
+
     private var nextPageUrl = ""
+
 
 
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
@@ -47,33 +53,7 @@ class NewsFeedRepositoryImpl @Inject constructor(
     private val feedPosts: List<FeedPost>
         get() = _feedPosts.toList()
 
-    val checkAuthStateEventsToken = MutableSharedFlow<Activity>(replay = 1)
 
-
-    private val authStateFlow = flow {
-
-        checkAuthStateEventsToken.collect {
-            Log.d("authStateFlow", "checkAuthStateEventsToken.collect")
-            val accessToken = AccessToken.getCurrentAccessToken()
-            var isTokenExpired = true
-            accessToken?.let { accessToken ->
-                isTokenExpired = accessToken.isExpired
-            }
-            if (!isTokenExpired) {
-                LoginManager.getInstance()
-                    .logInWithReadPermissions(it, listOf("public_profile", "user_friends"))
-                emit(AuthState.Authorized)
-            } else {
-                emit(AuthState.NotAuthorized)
-            }
-
-        }
-
-    }.stateIn(
-        scope = coroutineScope,
-        started = SharingStarted.Lazily,
-        initialValue = AuthState.Initial
-    )
 
 
     private val loadedListFlow: Flow<List<FeedPost>> = flow {
@@ -109,10 +89,6 @@ class NewsFeedRepositoryImpl @Inject constructor(
         )
 
 
-    override fun getAuthStateFlow(): StateFlow<AuthState> {
-        Log.d("authStateFlow", "getAuthStateFlow")
-      return  authStateFlow
-    }
 
     override fun getRepositoryPosts(): StateFlow<List<FeedPost>> = repositoryPosts
 

@@ -8,10 +8,11 @@ import androidx.navigation.NavType
 import com.balex.fbnewsclient.R
 import com.google.gson.Gson
 import kotlinx.parcelize.Parcelize
+import javax.inject.Inject
 import kotlin.random.Random
 
 @Parcelize
-data class FeedPost(
+data class FeedPost @Inject constructor(
     val id: String,
     val communityName: String = COMMUNITY_NAME,
     val publicationDate: String,
