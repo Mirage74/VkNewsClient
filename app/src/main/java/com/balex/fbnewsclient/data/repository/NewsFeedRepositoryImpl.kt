@@ -1,6 +1,7 @@
 package com.balex.fbnewsclient.data.repository
 
 import android.app.Activity
+import android.util.Log
 import com.balex.fbnewsclient.data.mapper.NewsFeedMapper
 import com.balex.fbnewsclient.data.model.PostsDto
 import com.balex.fbnewsclient.data.network.ApiFactory
@@ -28,6 +29,10 @@ import kotlinx.coroutines.flow.stateIn
 import java.util.Collections
 
 class NewsFeedRepositoryImpl : NewsFeedRepository {
+    init {
+        Log.d("NewsFeedRepositoryImpl", "NewsFeedRepositoryImpl Init")
+        Log.d("NewsFeedRepositoryImpl 2", "$this")
+    }
 
     private var nextPageUrl = ""
     private val apiService = ApiFactory.apiService

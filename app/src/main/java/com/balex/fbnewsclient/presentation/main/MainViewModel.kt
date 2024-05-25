@@ -1,5 +1,6 @@
 package com.balex.fbnewsclient.presentation.main
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.balex.fbnewsclient.data.repository.NewsFeedRepositoryImpl
