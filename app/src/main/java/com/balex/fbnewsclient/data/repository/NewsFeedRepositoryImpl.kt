@@ -1,20 +1,16 @@
 package com.balex.fbnewsclient.data.repository
 
-import android.app.Activity
 import android.util.Log
 import com.balex.fbnewsclient.data.mapper.NewsFeedMapper
 import com.balex.fbnewsclient.data.model.PostsDto
 import com.balex.fbnewsclient.data.network.ApiFactory
 import com.balex.fbnewsclient.data.network.ApiService
-import com.balex.fbnewsclient.domain.entity.AuthState
 import com.balex.fbnewsclient.domain.entity.FeedPost
 import com.balex.fbnewsclient.domain.entity.PostComment
 import com.balex.fbnewsclient.domain.entity.StatisticItem
 import com.balex.fbnewsclient.domain.entity.StatisticType
 import com.balex.fbnewsclient.domain.repository.NewsFeedRepository
 import com.balex.fbnewsclient.extensions.mergeWith
-import com.facebook.AccessToken
-import com.facebook.login.LoginManager
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
 import kotlinx.coroutines.Dispatchers
@@ -27,7 +23,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.retry
 import kotlinx.coroutines.flow.stateIn
-import kotlinx.coroutines.launch
 import java.util.Collections
 import javax.inject.Inject
 
