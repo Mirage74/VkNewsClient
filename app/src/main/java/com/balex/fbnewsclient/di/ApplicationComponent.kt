@@ -1,7 +1,11 @@
 package com.balex.fbnewsclient.di
 
 import android.content.Context
-import com.balex.fbnewsclient.domain.entity.FeedPost
+import android.util.Log
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.platform.LocalContext
+import com.balex.fbnewsclient.presentation.NewsFeedApplication
+import com.balex.fbnewsclient.presentation.ViewModelFactory
 import com.balex.fbnewsclient.presentation.main.MainActivity
 import dagger.BindsInstance
 import dagger.Component
@@ -15,7 +19,7 @@ import dagger.Component
 )
 interface ApplicationComponent {
 
-    fun inject(mainActivity: MainActivity)
+    fun getViewModelFactory(): ViewModelFactory
 
     fun getCommentsScreenComponentFactory(): CommentsScreenComponent.Factory
 
@@ -27,3 +31,4 @@ interface ApplicationComponent {
         ): ApplicationComponent
     }
 }
+

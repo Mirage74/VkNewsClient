@@ -7,40 +7,27 @@ import androidx.activity.compose.setContent
 import androidx.compose.runtime.collectAsState
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.balex.fbnewsclient.domain.entity.AuthState
-import com.balex.fbnewsclient.presentation.NewsFeedApplication
-import com.balex.fbnewsclient.presentation.ViewModelFactory
+import com.balex.fbnewsclient.presentation.getApplicationComponent
 import com.balex.fbnewsclient.ui.theme.FbNewsClientTheme
-import javax.inject.Inject
 
 
 class MainActivity : ComponentActivity() {
-
-    @Inject
-    lateinit var viewModelFactory: ViewModelFactory
-
-    private val component by lazy {
-        (application as NewsFeedApplication).component
-            //.activityComponentFactory()
-            //.create(this)
-    }
-
-
     override fun onCreate(savedInstanceState: Bundle?) {
-        component.inject(this)
         super.onCreate(savedInstanceState)
         setContent {
+            val component = getApplicationComponent()
+            val viewModel: MainViewModel = viewModel(factory = component.getViewModelFactory())
+            val authState = viewModel.authState.collectAsState(AuthState.Initial)
+
+
+            viewModel.checkToken(this)
             FbNewsClientTheme {
 
-                val viewModel: MainViewModel = viewModel(factory = viewModelFactory)
-                val authState = viewModel.authState.collectAsState(AuthState.Initial)
-
-
-                viewModel.checkToken(this)
 
                 when (authState.value) {
                     is AuthState.Authorized -> {
                         //Log.d("MainActivity", AccessToken.getCurrentAccessToken()?.permissions.toString())
-                        MainScreen(viewModelFactory)
+                        MainScreen()
                     }
                     is AuthState.NotAuthorized -> {
                         LoginScreen {
@@ -57,22 +44,5 @@ class MainActivity : ComponentActivity() {
     }
 
 
-
-
-//    private fun getHash() {
-//        try {
-//            val info = packageManager.getPackageInfo(
-//                "com.balex.fbnewsclient",
-//                PackageManager.GET_SIGNATURES
-//            )
-//            for (signature in info.signatures) {
-//                val md = MessageDigest.getInstance("SHA")
-//                md.update(signature.toByteArray())
-//                Log.d("KeyHash:", Base64.encodeToString(md.digest(), Base64.DEFAULT))
-//            }
-//        } catch (e: NameNotFoundException) {
-//        } catch (e: NoSuchAlgorithmException) {
-//        }
-//    }
 
 }

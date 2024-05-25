@@ -4,6 +4,7 @@ import android.os.Build
 import android.os.Bundle
 import android.os.Parcelable
 import androidx.annotation.RequiresApi
+import androidx.compose.runtime.Immutable
 import androidx.navigation.NavType
 import com.balex.fbnewsclient.R
 import com.google.gson.Gson
@@ -11,6 +12,7 @@ import kotlinx.parcelize.Parcelize
 import javax.inject.Inject
 import kotlin.random.Random
 
+@Immutable
 @Parcelize
 data class FeedPost @Inject constructor(
     val id: String,

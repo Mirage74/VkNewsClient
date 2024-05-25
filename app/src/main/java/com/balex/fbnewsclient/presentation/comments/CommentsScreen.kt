@@ -23,7 +23,6 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -31,62 +30,75 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.balex.fbnewsclient.domain.entity.FeedPost
 import com.balex.fbnewsclient.domain.entity.PostComment
-import com.balex.fbnewsclient.presentation.NewsFeedApplication
-import com.balex.fbnewsclient.presentation.ViewModelFactory
+import com.balex.fbnewsclient.presentation.getApplicationComponent
 import com.balex.fbnewsclient.ui.theme.FbNewsClientTheme
+import androidx.compose.runtime.State
 
 @Composable
 fun CommentsScreen(
     onBackPressed: () -> Unit,
     feedPost: FeedPost,
 ) {
-    val component = (LocalContext.current.applicationContext as NewsFeedApplication)
-        .component
+    val component = getApplicationComponent()
         .getCommentsScreenComponentFactory()
         .create(feedPost)
 
 
     val viewModel: CommentsViewModel = viewModel(factory = component.getViewModelFactory())
     val screenState = viewModel.screenState.collectAsState(CommentsScreenState.Initial)
-    val currentState = screenState.value
 
-    if (currentState is CommentsScreenState.Comments) {
-        Scaffold(
-            topBar = {
-                TopAppBar(
-                    title = {
-                        Text(text = "Comments for FeedPost Id: ${currentState.feedPost.id}")
-                    },
-                    navigationIcon = {
-                        IconButton(onClick = { onBackPressed() }) {
-                            Icon(
-                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                                contentDescription = null
-                            )
+    CommentsScreenContent(
+        screenState = screenState,
+        onBackPressed = onBackPressed
+    )
+}
+
+    @Composable
+    private fun CommentsScreenContent(
+        screenState: State<CommentsScreenState>,
+        onBackPressed: () -> Unit,
+    ) {
+        val currentState = screenState.value
+
+        if (currentState is CommentsScreenState.Comments) {
+            Scaffold(
+                topBar = {
+                    TopAppBar(
+                        title = {
+                            Text(text = "Comments for FeedPost Id: ${currentState.feedPost.id}")
+                        },
+                        navigationIcon = {
+                            IconButton(onClick = { onBackPressed() }) {
+                                Icon(
+                                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                    contentDescription = null
+                                )
+                            }
                         }
+                    )
+                }
+            ) { paddingValues ->
+                LazyColumn(
+                    modifier = Modifier.padding(paddingValues),
+                    contentPadding = PaddingValues(
+                        top = 16.dp,
+                        start = 8.dp,
+                        end = 8.dp,
+                        bottom = 72.dp
+                    )
+                ) {
+                    items(
+                        items = currentState.comments,
+                        key = { it.id }
+                    ) { comment ->
+                        CommentItem(comment = comment)
                     }
-                )
-            }
-        ) { paddingValues ->
-            LazyColumn(
-                modifier = Modifier.padding(paddingValues),
-                contentPadding = PaddingValues(
-                    top = 16.dp,
-                    start = 8.dp,
-                    end = 8.dp,
-                    bottom = 72.dp
-                )
-            ) {
-                items(
-                    items = currentState.comments,
-                    key = { it.id }
-                ) { comment ->
-                    CommentItem(comment = comment)
                 }
             }
         }
     }
-}
+
+
 
 @Composable
 private fun CommentItem(
