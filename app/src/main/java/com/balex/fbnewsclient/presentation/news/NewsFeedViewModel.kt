@@ -45,6 +45,7 @@ class NewsFeedViewModel : ViewModel() {
     }
 
     fun changeLikeStatus(feedPost: FeedPost) {
+        Log.d("NewsFeedRepositoryImpl", "NewsFeedViewModel repository: $repository")
         viewModelScope.launch(exceptionHandler) {
             repository.changeLikeStatus(feedPost)
         }

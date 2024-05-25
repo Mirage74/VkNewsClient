@@ -1,5 +1,6 @@
 package com.balex.fbnewsclient.presentation.main
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.balex.fbnewsclient.data.repository.NewsFeedRepository
@@ -22,6 +23,7 @@ class MainViewModel() : ViewModel() {
 
 
     fun processSuccessLoginResult() {
+        Log.d("NewsFeedRepositoryImpl", "MainViewModel repository: $repository")
         viewModelScope.launch {
             isUserAuthorized.emit(AuthState.Authorized)
         }
