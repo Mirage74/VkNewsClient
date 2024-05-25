@@ -15,17 +15,15 @@ import dagger.Component
 )
 interface ApplicationComponent {
 
-    //fun activityComponentFactory(): ActivityComponent.Factory
     fun inject(mainActivity: MainActivity)
+
+    fun getCommentsScreenComponentFactory(): CommentsScreenComponent.Factory
 
     @Component.Factory
     interface Factory {
 
         fun create(
-            @BindsInstance context: Context,
-            @BindsInstance feedPost: FeedPost,
+            @BindsInstance context: Context
         ): ApplicationComponent
     }
 }
-
-

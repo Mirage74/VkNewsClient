@@ -23,6 +23,7 @@ import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -30,18 +31,22 @@ import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
 import com.balex.fbnewsclient.domain.entity.FeedPost
 import com.balex.fbnewsclient.domain.entity.PostComment
+import com.balex.fbnewsclient.presentation.NewsFeedApplication
 import com.balex.fbnewsclient.presentation.ViewModelFactory
 import com.balex.fbnewsclient.ui.theme.FbNewsClientTheme
 
 @Composable
 fun CommentsScreen(
-    viewModelFactory: ViewModelFactory,
     onBackPressed: () -> Unit,
     feedPost: FeedPost,
 ) {
+    val component = (LocalContext.current.applicationContext as NewsFeedApplication)
+        .component
+        .getCommentsScreenComponentFactory()
+        .create(feedPost)
 
 
-    val viewModel: CommentsViewModel = viewModel(factory = viewModelFactory)
+    val viewModel: CommentsViewModel = viewModel(factory = component.getViewModelFactory())
     val screenState = viewModel.screenState.collectAsState(CommentsScreenState.Initial)
     val currentState = screenState.value
 

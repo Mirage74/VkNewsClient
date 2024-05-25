@@ -10,9 +10,6 @@ class NewsFeedApplication : Application() {
 
     val component: ApplicationComponent by lazy {
         DaggerApplicationComponent.factory()
-            .create(
-            this,
-            FeedPost(id = "", publicationDate = "", contentText = "")
-        )
+            .create(this)
     }
 }
