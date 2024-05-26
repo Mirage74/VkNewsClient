@@ -11,6 +11,7 @@ import com.balex.fbnewsclient.domain.entity.StatisticItem
 import com.balex.fbnewsclient.domain.entity.StatisticType
 import com.balex.fbnewsclient.domain.entity.UserFacebookProfile
 import com.balex.fbnewsclient.domain.repository.NewsFeedRepository
+import com.balex.fbnewsclient.extensions.getItemById
 import com.balex.fbnewsclient.extensions.mergeWith
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Deferred
@@ -86,6 +87,9 @@ class NewsFeedRepositoryImpl @Inject constructor(
         delay(RETRY_TIMEOUT_MILLIS)
         true
     }
+
+
+
 
     private val repositoryPosts: StateFlow<List<FeedPost>> = loadedListFlow
         .mergeWith(refreshedListFlow)
@@ -194,6 +198,14 @@ class NewsFeedRepositoryImpl @Inject constructor(
         val postIndex = _feedPosts.indexOf(feedPost)
         _feedPosts[postIndex] = newPost
         refreshedListFlow.emit(feedPosts)
+
+        val postFavIndex = _favouritePosts.indexOf(feedPost)
+        if (postFavIndex > -1) {
+            _favouritePosts[postFavIndex] = newPost
+            favouritePostsRefreshed.emit(Unit)
+        }
+
+
     }
 
     override suspend fun changeFavouritePostStatus(feedPost: FeedPost) {
@@ -201,12 +213,15 @@ class NewsFeedRepositoryImpl @Inject constructor(
         val postIndex = _feedPosts.indexOf(feedPost)
         _feedPosts[postIndex] = newPost
         refreshedListFlow.emit(feedPosts)
-        if (newPost.isFavourite && !_favouritePosts.contains(newPost)) {
-            _favouritePosts.add(feedPost)
-        } else {
-            if (_favouritePosts.contains(feedPost)) {
-                _favouritePosts.remove(feedPost)
+        val itemInFav = _favouritePosts.getItemById(feedPost.id)
 
+        if (newPost.isFavourite) {
+            if (itemInFav.id == "") {
+                _favouritePosts.add(newPost)
+            }
+        } else {
+            if (itemInFav.id != "") {
+                _favouritePosts.remove(itemInFav)
             }
         }
         favouritePostsRefreshed.emit(Unit)

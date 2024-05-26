@@ -20,6 +20,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import com.balex.fbnewsclient.navigation.AppNavGraph
 import com.balex.fbnewsclient.navigation.rememberNavigationState
 import com.balex.fbnewsclient.presentation.comments.CommentsScreen
+import com.balex.fbnewsclient.presentation.favourite.FavouritesScreen
 import com.balex.fbnewsclient.presentation.news.NewsFeedScreen
 import com.balex.fbnewsclient.presentation.profile.ProfileScreen
 
@@ -96,7 +97,12 @@ fun MainScreen() {
                 )
             },
             favouriteScreenContent = {
-                TextCounter(name = "Favourite")
+                FavouritesScreen(
+                    paddingValues = paddingValues,
+                    onCommentClickListener = {
+                        navigationState.navigateToComments(it)
+                    }
+                )
             },
             profileScreenContent = {
                 ProfileScreen()

@@ -6,7 +6,6 @@ import androidx.lifecycle.viewModelScope
 import com.balex.fbnewsclient.domain.entity.FeedPost
 import com.balex.fbnewsclient.domain.usecases.ChangeFavouritePostStatusUseCase
 import com.balex.fbnewsclient.domain.usecases.ChangeLikeStatusUseCase
-import com.balex.fbnewsclient.domain.usecases.ChangeLikeStatusUseCase_Factory
 import com.balex.fbnewsclient.domain.usecases.DeletePostUseCase
 import com.balex.fbnewsclient.domain.usecases.GetRepositoryPostsUseCase
 import com.balex.fbnewsclient.domain.usecases.LoadNextDataUseCase

@@ -1,7 +1,7 @@
 package com.balex.fbnewsclient.di
 
 import androidx.lifecycle.ViewModel
-import com.balex.fbnewsclient.presentation.comments.CommentsViewModel
+import com.balex.fbnewsclient.presentation.favourite.FavouritesViewModel
 import com.balex.fbnewsclient.presentation.main.MainViewModel
 import com.balex.fbnewsclient.presentation.news.NewsFeedViewModel
 import com.balex.fbnewsclient.presentation.profile.ProfileViewModel
@@ -26,5 +26,10 @@ interface ViewModelModule {
     @ViewModelKey(ProfileViewModel::class)
     @Binds
     fun bindProfileViewModel(viewModel: ProfileViewModel): ViewModel
+
+    @IntoMap
+    @ViewModelKey(FavouritesViewModel::class)
+    @Binds
+    fun bindFavouritesViewModel(viewModel: FavouritesViewModel): ViewModel
 
 }
