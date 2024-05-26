@@ -26,6 +26,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
 import com.balex.fbnewsclient.R
 import com.balex.fbnewsclient.domain.entity.FeedPost
@@ -37,8 +38,9 @@ import com.balex.fbnewsclient.ui.theme.DarkRed
 fun PostCard(
     modifier: Modifier = Modifier,
     feedPost: FeedPost,
-    onLikeClickListener: (StatisticItem) -> Unit,
-    onCommentClickListener: (StatisticItem) -> Unit,
+    onLikeClickListener: () -> Unit,
+    onCommentClickListener: () -> Unit,
+    onFavouriteClickListener: () -> Unit
 ) {
     Card(
         modifier = modifier
@@ -63,7 +65,9 @@ fun PostCard(
                 statistics = feedPost.statistics,
                 onLikeClickListener = onLikeClickListener,
                 onCommentClickListener = onCommentClickListener,
-                isFavourite = feedPost.isLiked
+                onFavouriteClickListener = onFavouriteClickListener,
+                isLiked = feedPost.isLiked,
+                isInFavouriteList = feedPost.isFavourite
             )
         }
     }
@@ -109,9 +113,11 @@ private fun PostHeader(
 @Composable
 private fun Statistics(
     statistics: List<StatisticItem>,
-    onLikeClickListener: (StatisticItem) -> Unit,
-    onCommentClickListener: (StatisticItem) -> Unit,
-    isFavourite: Boolean
+    onLikeClickListener: () -> Unit,
+    onCommentClickListener: () -> Unit,
+    onFavouriteClickListener: () -> Unit,
+    isLiked: Boolean,
+    isInFavouriteList: Boolean
 ) {
     Row {
         Row(
@@ -124,7 +130,19 @@ private fun Statistics(
             )
         }
         Row(
-            modifier = Modifier.weight(1f),
+            modifier = Modifier.weight(1f)
+        ) {
+            IconWithText(
+                iconResId = if (isInFavouriteList) R.drawable.ic_favourite_set else R.drawable.ic_favourite,
+                text = if (isInFavouriteList) stringResource(id = R.string.in_favourite_list) else stringResource(id = R.string.not_in_favourite_list),
+                onItemClickListener = {
+                    onFavouriteClickListener()
+                },
+                tint = if (isInFavouriteList) DarkRed else MaterialTheme.colors.onSecondary
+            )
+        }
+        Row(
+            modifier = Modifier.weight(2f),
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             val sharesItem = statistics.getItemByType(StatisticType.SHARES)
@@ -137,17 +155,17 @@ private fun Statistics(
                 iconResId = R.drawable.ic_comment,
                 text = formatStatisticCount(commentItem.count),
                 onItemClickListener = {
-                    onCommentClickListener(commentItem)
+                    onCommentClickListener()
                 }
             )
             val likesItem = statistics.getItemByType(StatisticType.LIKES)
             IconWithText(
-                iconResId = if (isFavourite) R.drawable.ic_like_set else R.drawable.ic_like,
+                iconResId = if (isLiked) R.drawable.ic_like_set else R.drawable.ic_like,
                 text = formatStatisticCount(likesItem.count),
                 onItemClickListener = {
-                    onLikeClickListener(likesItem)
+                    onLikeClickListener()
                 },
-                tint = if (isFavourite) DarkRed else MaterialTheme.colors.onSecondary
+                tint = if (isLiked) DarkRed else MaterialTheme.colors.onSecondary
             )
         }
     }
@@ -198,3 +216,4 @@ private fun IconWithText(
         )
     }
 }
+

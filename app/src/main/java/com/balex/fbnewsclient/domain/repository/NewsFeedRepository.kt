@@ -11,6 +11,8 @@ interface NewsFeedRepository {
 
     fun getRepositoryPosts(): StateFlow<List<FeedPost>>
 
+    fun getFavouriteList(): StateFlow<List<FeedPost>>
+
     fun getComments(): StateFlow<List<PostComment>>
 
     fun getUserFacebookProfile(): StateFlow<UserFacebookProfile>
@@ -18,6 +20,8 @@ interface NewsFeedRepository {
     suspend fun getNextPage()
 
     suspend fun deletePost(feedPost: FeedPost)
+
+    suspend fun changeFavouritePostStatus(feedPost: FeedPost)
 
     suspend fun changeLikeStatus(feedPost: FeedPost)
 

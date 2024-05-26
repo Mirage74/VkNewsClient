@@ -4,7 +4,9 @@ import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.balex.fbnewsclient.domain.entity.FeedPost
+import com.balex.fbnewsclient.domain.usecases.ChangeFavouritePostStatusUseCase
 import com.balex.fbnewsclient.domain.usecases.ChangeLikeStatusUseCase
+import com.balex.fbnewsclient.domain.usecases.ChangeLikeStatusUseCase_Factory
 import com.balex.fbnewsclient.domain.usecases.DeletePostUseCase
 import com.balex.fbnewsclient.domain.usecases.GetRepositoryPostsUseCase
 import com.balex.fbnewsclient.domain.usecases.LoadNextDataUseCase
@@ -21,7 +23,9 @@ class NewsFeedViewModel @Inject constructor(
     getPostsUseCase: GetRepositoryPostsUseCase,
     private val loadNextDataUseCase: LoadNextDataUseCase,
     private val changeLikeStatusUseCase: ChangeLikeStatusUseCase,
-    private val deletePostUseCase: DeletePostUseCase
+    private val changeFavouritePostStatusUseCase: ChangeFavouritePostStatusUseCase,
+    private val deletePostUseCase: DeletePostUseCase,
+
 ) : ViewModel() {
 
     private val exceptionHandler = CoroutineExceptionHandler { _, _ ->
@@ -56,6 +60,12 @@ class NewsFeedViewModel @Inject constructor(
         viewModelScope.launch(exceptionHandler) {
             changeLikeStatusUseCase(feedPost)
         }
+    }
+
+    fun changeFavouriteStatus(feedPost: FeedPost) {
+            viewModelScope.launch(exceptionHandler) {
+                changeFavouritePostStatusUseCase(feedPost)
+            }
     }
 
 

@@ -118,6 +118,9 @@ private fun FeedPosts(
                     onLikeClickListener = {
                         viewModel.changeLikeStatus(feedPost)
                     },
+                    onFavouriteClickListener = {
+                        viewModel.changeFavouriteStatus(feedPost)
+                    }
                 )
             }
         }

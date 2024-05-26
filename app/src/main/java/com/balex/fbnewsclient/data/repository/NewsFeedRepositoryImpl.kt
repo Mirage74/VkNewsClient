@@ -21,6 +21,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.retry
 import kotlinx.coroutines.flow.stateIn
@@ -39,7 +40,6 @@ class NewsFeedRepositoryImpl @Inject constructor(
     private var nextPageUrl = ""
 
 
-
     private val coroutineScope = CoroutineScope(Dispatchers.Default)
 
     private val nextDataPageLoaded = MutableSharedFlow<Unit>(replay = 1)
@@ -54,6 +54,11 @@ class NewsFeedRepositoryImpl @Inject constructor(
     private var currentUserFacebookProfile = UserFacebookProfile()
 
 
+    private val favouritePostsRefreshed = MutableSharedFlow<Unit>(replay = 1)
+
+    private val _favouritePosts = mutableListOf<FeedPost>()
+    private val favouritePosts: List<FeedPost>
+        get() = _favouritePosts.toList()
 
 
     private val loadedListFlow: Flow<List<FeedPost>> = flow {
@@ -90,17 +95,29 @@ class NewsFeedRepositoryImpl @Inject constructor(
             initialValue = feedPosts
         )
 
+    private val favouriteRepositoryPosts: StateFlow<List<FeedPost>> = flow {
+        favouritePostsRefreshed.collect {
+            emit(favouritePosts)
+        }
+    }
+        .stateIn(
+            scope = coroutineScope,
+            started = SharingStarted.Lazily,
+            initialValue = feedPosts
+        )
+
 
     private val facebookProfile: StateFlow<UserFacebookProfile> = flow {
-        userFacebookProfileChanged.collect{
+        userFacebookProfileChanged.collect {
             emit(currentUserFacebookProfile)
         }
-    }.
-    stateIn(
+    }.stateIn(
         scope = coroutineScope,
         started = SharingStarted.Lazily,
         initialValue = UserFacebookProfile()
     )
+
+    override fun getFavouriteList(): StateFlow<List<FeedPost>> = favouriteRepositoryPosts
 
     override fun getUserFacebookProfile(): StateFlow<UserFacebookProfile> = facebookProfile
 
@@ -130,8 +147,6 @@ class NewsFeedRepositoryImpl @Inject constructor(
     }
 
 
-
-
     private fun cutNextUrl(oldUrl: String): String {
         val maskSearch = "facebook.com/"
         var indexEnd = oldUrl.indexOf(maskSearch) + maskSearch.length
@@ -158,8 +173,6 @@ class NewsFeedRepositoryImpl @Inject constructor(
     }
 
 
-
-
     override suspend fun changeLikeStatus(feedPost: FeedPost) {
         //throw RuntimeException()
         val likeItem = feedPost.statistics.first {
@@ -183,10 +196,32 @@ class NewsFeedRepositoryImpl @Inject constructor(
         refreshedListFlow.emit(feedPosts)
     }
 
+    override suspend fun changeFavouritePostStatus(feedPost: FeedPost) {
+        val newPost = feedPost.copy(isFavourite = !feedPost.isFavourite)
+        val postIndex = _feedPosts.indexOf(feedPost)
+        _feedPosts[postIndex] = newPost
+        refreshedListFlow.emit(feedPosts)
+        if (newPost.isFavourite && !_favouritePosts.contains(newPost)) {
+            _favouritePosts.add(feedPost)
+        } else {
+            if (_favouritePosts.contains(feedPost)) {
+                _favouritePosts.remove(feedPost)
+
+            }
+        }
+        favouritePostsRefreshed.emit(Unit)
+    }
+
+
     override suspend fun deletePost(feedPost: FeedPost) {
         _feedPosts.remove(feedPost)
         refreshedListFlow.emit(feedPosts)
+        if (_favouritePosts.contains(feedPost)) {
+            _favouritePosts.remove(feedPost)
+            favouritePostsRefreshed.emit(Unit)
+        }
     }
+
 
     override fun getComments(): StateFlow<List<PostComment>> = flow {
         val comments = mutableListOf<PostComment>().apply {

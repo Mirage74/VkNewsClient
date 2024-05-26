@@ -1,5 +1,7 @@
 package com.balex.fbnewsclient.navigation
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.runtime.Composable
 import androidx.navigation.NavGraphBuilder
 import androidx.navigation.compose.composable
@@ -8,6 +10,7 @@ import androidx.navigation.navigation
 import com.balex.fbnewsclient.domain.entity.FeedPost
 
 
+@RequiresApi(Build.VERSION_CODES.TIRAMISU)
 fun NavGraphBuilder.homeScreenNavGraph(
     newsFeedScreenContent: @Composable () -> Unit,
     commentsScreenContent: @Composable (FeedPost) -> Unit

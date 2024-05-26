@@ -27,7 +27,8 @@ data class FeedPost @Inject constructor(
         StatisticItem(StatisticType.SHARES),
         StatisticItem(StatisticType.LIKES)
     ),
-    val isLiked: Boolean = Random.nextBoolean()
+    val isLiked: Boolean = Random.nextBoolean(),
+    val isFavourite: Boolean = false
 ) : Parcelable {
 
     companion object {
