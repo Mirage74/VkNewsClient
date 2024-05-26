@@ -1,4 +1,4 @@
-package com.balex.fbnewsclient.presentation.news
+package com.balex.fbnewsclient.presentation.profile
 
 import com.balex.fbnewsclient.domain.entity.UserFacebookProfile
 

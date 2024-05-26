@@ -4,6 +4,7 @@ import android.app.Activity
 import com.balex.fbnewsclient.domain.entity.AuthState
 import com.balex.fbnewsclient.domain.entity.FeedPost
 import com.balex.fbnewsclient.domain.entity.PostComment
+import com.balex.fbnewsclient.domain.entity.UserFacebookProfile
 import kotlinx.coroutines.flow.StateFlow
 
 interface NewsFeedRepository {
@@ -11,6 +12,8 @@ interface NewsFeedRepository {
     fun getRepositoryPosts(): StateFlow<List<FeedPost>>
 
     fun getComments(): StateFlow<List<PostComment>>
+
+    fun getUserFacebookProfile(): StateFlow<UserFacebookProfile>
 
     suspend fun getNextPage()
 

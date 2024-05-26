@@ -9,6 +9,7 @@ import com.balex.fbnewsclient.domain.entity.FeedPost
 import com.balex.fbnewsclient.domain.entity.PostComment
 import com.balex.fbnewsclient.domain.entity.StatisticItem
 import com.balex.fbnewsclient.domain.entity.StatisticType
+import com.balex.fbnewsclient.domain.entity.UserFacebookProfile
 import com.balex.fbnewsclient.domain.repository.NewsFeedRepository
 import com.balex.fbnewsclient.extensions.mergeWith
 import kotlinx.coroutines.CoroutineScope
@@ -49,14 +50,20 @@ class NewsFeedRepositoryImpl @Inject constructor(
         get() = _feedPosts.toList()
 
 
+    private val userFacebookProfileChanged = MutableSharedFlow<Unit>(replay = 1)
+    private var currentUserFacebookProfile = UserFacebookProfile()
+
+
 
 
     private val loadedListFlow: Flow<List<FeedPost>> = flow {
         val deferredUserFacebookProfile = CoroutineScope(Dispatchers.IO).async {
             ApiFactory.apiService.getUserProfile()
         }
-        val userFacebookProfile = deferredUserFacebookProfile.await()
+        var userFacebookProfile = deferredUserFacebookProfile.await()
         if (userFacebookProfile.id.isNotBlank()) {
+            currentUserFacebookProfile = userFacebookProfile
+            userFacebookProfileChanged.emit(Unit)
             val userPosts = mutableListOf<FeedPost>()
             for (i in 1..NUMBER_PAGE_TO_LOAD) {
                 userPosts.addAll(getUserPosts(userFacebookProfile.id, i))
@@ -84,6 +91,18 @@ class NewsFeedRepositoryImpl @Inject constructor(
         )
 
 
+    private val facebookProfile: StateFlow<UserFacebookProfile> = flow {
+        userFacebookProfileChanged.collect{
+            emit(currentUserFacebookProfile)
+        }
+    }.
+    stateIn(
+        scope = coroutineScope,
+        started = SharingStarted.Lazily,
+        initialValue = UserFacebookProfile()
+    )
+
+    override fun getUserFacebookProfile(): StateFlow<UserFacebookProfile> = facebookProfile
 
     override fun getRepositoryPosts(): StateFlow<List<FeedPost>> = repositoryPosts
 
@@ -110,6 +129,9 @@ class NewsFeedRepositoryImpl @Inject constructor(
         }
     }
 
+
+
+
     private fun cutNextUrl(oldUrl: String): String {
         val maskSearch = "facebook.com/"
         var indexEnd = oldUrl.indexOf(maskSearch) + maskSearch.length
@@ -134,6 +156,8 @@ class NewsFeedRepositoryImpl @Inject constructor(
             nextDataPageLoaded.emit(Unit)
         }
     }
+
+
 
 
     override suspend fun changeLikeStatus(feedPost: FeedPost) {

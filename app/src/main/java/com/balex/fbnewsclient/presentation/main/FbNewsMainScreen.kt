@@ -21,6 +21,7 @@ import com.balex.fbnewsclient.navigation.AppNavGraph
 import com.balex.fbnewsclient.navigation.rememberNavigationState
 import com.balex.fbnewsclient.presentation.comments.CommentsScreen
 import com.balex.fbnewsclient.presentation.news.NewsFeedScreen
+import com.balex.fbnewsclient.presentation.profile.ProfileScreen
 
 
 @Composable
@@ -94,8 +95,12 @@ fun MainScreen() {
                     feedPost = feedPost
                 )
             },
-            favouriteScreenContent = { TextCounter(name = "Favourite") },
-            profileScreenContent = { TextCounter(name = "Profile") }
+            favouriteScreenContent = {
+                TextCounter(name = "Favourite")
+            },
+            profileScreenContent = {
+                ProfileScreen()
+            }
         )
     }
 }
